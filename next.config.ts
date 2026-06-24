@@ -10,12 +10,14 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/cron/agents/content": ["./doctrine/**/*"],
     "/api/cron/agents/leads": ["./doctrine/**/*"],
+    "/api/cron/agents/competitors": ["./doctrine/**/*"],
     "/api/cron/briefs": ["./doctrine/**/*"],
     "/api/cron/all": ["./doctrine/**/*"],
     "/ai-team": ["./doctrine/**/*"],
     "/gtm/content": ["./doctrine/**/*"],
     "/gtm/content/[id]": ["./doctrine/**/*"],
     "/gtm/leads": ["./doctrine/**/*"],
+    "/gtm/competitors": ["./doctrine/**/*"],
   },
 };
 

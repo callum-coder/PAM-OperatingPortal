@@ -10,6 +10,7 @@ import {
 import { buildSignalStatusUpdate, type SignalWorkflowStatus } from "@/lib/gtm/signal-workflow";
 import { executeContentWriter } from "@/lib/gtm/agents/content-writer";
 import { executeLeadFinder } from "@/lib/gtm/agents/lead-finder";
+import { executeCompetitorScout } from "@/lib/gtm/agents/competitor-scout";
 import { requirePermission } from "@/lib/rbac/guard";
 import { createPortalAdminClient } from "@/lib/supabase";
 
@@ -285,6 +286,15 @@ export async function generateLeadPlays() {
   await requirePermission("gtm.leads.write");
   await executeLeadFinder();
   revalidatePath("/gtm/leads");
+  revalidatePath("/gtm");
+  revalidatePath("/ai-team");
+}
+
+// Runs the Competitor Scout: fetch each watched page, diff, and record changes.
+export async function scanCompetitors() {
+  await requirePermission("gtm.competitors.write");
+  await executeCompetitorScout();
+  revalidatePath("/gtm/competitors");
   revalidatePath("/gtm");
   revalidatePath("/ai-team");
 }

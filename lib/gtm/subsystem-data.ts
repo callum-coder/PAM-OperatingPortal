@@ -10,6 +10,29 @@ export type CompetitorWatchRow = {
   last_checked_at: string | null;
 };
 
+export type CompetitorChangeRow = {
+  id: string;
+  competitor: string;
+  watch_type: string;
+  diff_summary: string | null;
+  significance: string | null;
+  detected_at: string | null;
+};
+
+export async function getCompetitorChanges(): Promise<CompetitorChangeRow[]> {
+  if (!hasPortalSupabaseConfig()) return [];
+
+  const supabase = createPortalAdminClient();
+  const { data, error } = await supabase
+    .from("gtm_competitor_changes")
+    .select("id,competitor,watch_type,diff_summary,significance,detected_at")
+    .order("detected_at", { ascending: false })
+    .limit(20);
+
+  if (error) throw new Error(`Failed to load competitor changes: ${error.message}`);
+  return (data ?? []) as CompetitorChangeRow[];
+}
+
 export type ContentItemRow = {
   id: string;
   title: string;
