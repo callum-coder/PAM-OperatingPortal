@@ -12,65 +12,23 @@
 
 ## 0. Product context
 
-- **What PAM is:** **Property AI Manager** — a UK platform that helps landlords
-  and tenants run a rental property. It acts as a software property manager and,
-  critically, handles the landlord's **Making Tax Digital (MTD)** obligations.
-  Integrated features:
-  - **MTD submissions** — digital tax filing to HMRC (the regulatory wedge)
-  - **Maintenance triage** — tenants report faults; the system triages them
-  - **Self-fix guidance & videos** — help tenants rectify faults without a callout
-  - **Compliance storage & updates** — certificates, deadlines, regulation changes
-  - **Property reports** — finance, maintenance, and occupancy
-- **Who we sell to (ICP):** **Landlords are the core customer** — typically
-  self-managing / "accidental" or small-portfolio UK landlords without a letting
-  agent or accountant. Tenants are *users* of the maintenance side, not buyers.
-  Write to the landlord; the tenant experience is a selling point *to* the landlord.
-- **The core job (JTBD):** *"Stay compliant and handle my MTD obligations without
-  hiring a letting agent or an accountant — and stop fielding maintenance calls."*
-  Two intertwined jobs: **regulatory survival** (MTD + compliance) and
-  **management relief** (maintenance, reports).
-- **The offer mechanic:** **14-day free trial, no credit card**, converting to a
-  tiered monthly SaaS subscription priced by portfolio size (15% off annual,
-  cancel any time). The trial *is* the offer — every conversion-stage CTA leads
-  to "Start your 14-day trial." Tiers:
-  - **Solo** — £12/mo · 1–3 properties. MTD quarterly filing, compliance
-    certificate tracking, EICR/Gas Safety/EPC alerts, 10GB document vault, receipt
-    scan & AI categorisation, tenancy & rent ledger, tenant app.
-  - **Portfolio** — £24/mo · 4–10 properties (*most popular*). Everything in Solo
-    plus GoCardless rent collection (PAM Pay), WhatsApp tenant triage, contractor
-    Google Maps search, AST creation & e-signature, tenant referencing (Canopy),
-    unlimited storage, priority email support.
-  - **Serious** — £49/mo · 11–25 properties. Everything in Portfolio plus PAM
-    voice call agent, maintenance triage & auto-booking, team sub-accounts (3
-    users), landlord-branded tenant portal, Xero sync, bulk onboarding.
-    **£1.50/property over 25.**
-  - **Segment content by tier persona:** Solo = accidental/small landlord (1–3),
-    Portfolio = growing landlord (4–10), Serious = professional portfolio (11+).
-    A piece should target one persona; the pain and proof differ across them.
-- **Voice:** plain, reassuring, UK English. The reader is often anxious and
-  non-expert about tax and compliance — calm authority, never jargon or scare-tactics.
+> Product, ICP, tier personas, pricing, positioning, domain context (MTD, fears,
+> frictions), and voice live in **`_house.md`**, which the runner prepends to this
+> file. Do not restate it here — read it as the foundation for every rule below.
 
-### Domain notes — these make content *relevant*, not generic
+Content-specific framing on top of the house context:
 
-- **The forcing function is MTD.** MTD for Income Tax is a phased HMRC mandate
-  with hard deadlines. This is the strongest content lever PAM has: it creates
-  *real* urgency and a *real* deadline (no manufactured scarcity needed). Tie
-  urgency to actual MTD phase-in dates and the **2026-08-07 MTD wedge** in
-  `lib/gtm/briefs.ts`.
-- **The alternatives we position against** (§5): a **letting agent** (8–15% of
-  rent), an **accountant** (for tax), a **spreadsheet**, or **doing nothing /
-  non-compliance** (HMRC penalty risk). PAM's frame: agent-grade management +
-  MTD compliance at software price.
-- **Dominant fears** (drive likelihood + proof): HMRC penalties, getting tax
-  wrong, missing a compliance certificate, a maintenance issue becoming a legal
-  liability. Content that removes a *specific* fear outperforms content that
-  promises a vague gain.
-- **Dominant friction** (drive effort lever): "I'm not an accountant," "I don't
-  have time to chase tradespeople," "I don't know what compliance I'm missing."
-
-Every idea this agent emits must serve *this* product, *this* landlord, *these*
-jobs. If an idea would be equally true for any SaaS, it has failed the relevance
-gate.
+- **The relevance test:** every idea must serve PAM's landlord and the two jobs
+  (regulatory survival + management relief). If an idea would be equally true for
+  *any* SaaS, it has failed the relevance gate (§5) — reject or rework it.
+- **MTD is your sharpest lever.** It is a real regulatory deadline, so it powers
+  genuine urgency (§8) and a natural problem→solution journey (§4). Reach for it
+  before any softer angle.
+- **Segment by tier persona.** One piece targets one persona (Solo / Portfolio /
+  Serious). The pain, proof, and price-frame differ across them.
+- **The feature list is an idea bank.** Each paid feature maps to a job and a fear
+  it removes (e.g. *EICR/Gas/EPC alerts → "never miss a certificate" → fear of an
+  expired cert and the liability that follows*). Mine features this way.
 
 ---
 
