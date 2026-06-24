@@ -10,25 +10,53 @@
 
 ---
 
-## 0. Product context — CONFIRM BEFORE RELYING ON THIS FILE
+## 0. Product context
 
-> ⚠️ Callum: this block drives every relevance score. The rest of the doctrine is
-> product-agnostic method; this section is the part only you can make correct.
-> Replace the bracketed assumptions, then delete this warning.
+- **What PAM is:** **Property AI Manager** — a UK platform that helps landlords
+  and tenants run a rental property. It acts as a software property manager and,
+  critically, handles the landlord's **Making Tax Digital (MTD)** obligations.
+  Integrated features:
+  - **MTD submissions** — digital tax filing to HMRC (the regulatory wedge)
+  - **Maintenance triage** — tenants report faults; the system triages them
+  - **Self-fix guidance & videos** — help tenants rectify faults without a callout
+  - **Compliance storage & updates** — certificates, deadlines, regulation changes
+  - **Property reports** — finance, maintenance, and occupancy
+- **Who we sell to (ICP):** **Landlords are the core customer** — typically
+  self-managing / "accidental" or small-portfolio UK landlords without a letting
+  agent or accountant. Tenants are *users* of the maintenance side, not buyers.
+  Write to the landlord; the tenant experience is a selling point *to* the landlord.
+- **The core job (JTBD):** *"Stay compliant and handle my MTD obligations without
+  hiring a letting agent or an accountant — and stop fielding maintenance calls."*
+  Two intertwined jobs: **regulatory survival** (MTD + compliance) and
+  **management relief** (maintenance, reports).
+- **The offer mechanic:** SaaS subscription, tiered. ⚠️ *Exact tiers/prices/trial
+  pending — paste from propertyaimanager.com/#pricing (the page blocks automated
+  fetch). Until then, treat the offer step as "start the free experience → paid
+  subscription" and revise when tiers are confirmed.*
+- **Voice:** plain, reassuring, UK English. The reader is often anxious and
+  non-expert about tax and compliance — calm authority, never jargon or scare-tactics.
 
-- **What PAM is:** [B2C SaaS — *assumed* property/home management for UK consumers,
-  inferred from the schema (`properties`, `units`, `homes`) and `let-safe.com`.
-  CORRECT THIS.]
-- **Who we sell to (ICP):** [the consumer persona — e.g. homeowner / renter /
-  landlord — and their context]
-- **The core job they hire PAM for (JTBD):** [the outcome, in their words]
-- **The offer mechanic:** [free → paid path — trial? freemium? what unlocks paid?]
-- **The MTD wedge:** the operating goal is the **2026-08-07 MTD wedge date**
-  (see `lib/gtm/briefs.ts`). Content urgency is scored against it.
-- **Voice:** [tone — plain, warm, UK English; no jargon]
+### Domain notes — these make content *relevant*, not generic
 
-Every idea this agent emits must serve *this* product, *this* ICP, *this* job.
-If an idea would be equally true for any SaaS, it has failed the relevance gate.
+- **The forcing function is MTD.** MTD for Income Tax is a phased HMRC mandate
+  with hard deadlines. This is the strongest content lever PAM has: it creates
+  *real* urgency and a *real* deadline (no manufactured scarcity needed). Tie
+  urgency to actual MTD phase-in dates and the **2026-08-07 MTD wedge** in
+  `lib/gtm/briefs.ts`.
+- **The alternatives we position against** (§5): a **letting agent** (8–15% of
+  rent), an **accountant** (for tax), a **spreadsheet**, or **doing nothing /
+  non-compliance** (HMRC penalty risk). PAM's frame: agent-grade management +
+  MTD compliance at software price.
+- **Dominant fears** (drive likelihood + proof): HMRC penalties, getting tax
+  wrong, missing a compliance certificate, a maintenance issue becoming a legal
+  liability. Content that removes a *specific* fear outperforms content that
+  promises a vague gain.
+- **Dominant friction** (drive effort lever): "I'm not an accountant," "I don't
+  have time to chase tradespeople," "I don't know what compliance I'm missing."
+
+Every idea this agent emits must serve *this* product, *this* landlord, *these*
+jobs. If an idea would be equally true for any SaaS, it has failed the relevance
+gate.
 
 ---
 
@@ -82,8 +110,10 @@ For each idea, classify which lever it pulls **hardest**:
 
 Rules:
 - "Educational" is **not** a lever. If an idea pulls no lever, reject it.
-- B2C readers buy on **likelihood** and **effort** far more than on outcome
-  size. Prefer ideas that make success feel *certain and easy*.
+- Our landlord buys on **likelihood** (will I actually be compliant / avoid an
+  HMRC penalty?) and **effort** (can I do this without an accountant or agent?)
+  far more than on outcome size. The dream outcome is usually *risk removed*, not
+  upside gained. Prefer ideas that make compliance feel **certain and effortless**.
 
 ---
 
