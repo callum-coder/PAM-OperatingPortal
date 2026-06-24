@@ -9,6 +9,7 @@ import { CampaignForm, ManualInputForm, OutreachReadinessChecklist } from "./ope
 
 const subsystems = [
   ["briefs", "Weekly briefs", "/gtm/briefs"],
+  ["leads", "Lead engine", "/gtm/leads"],
   ["competitors", "Competitor monitor", "/gtm/competitors"],
   ["experiments", "Experiment loop", "/gtm/experiments"],
   ["content", "Content pipeline", "/gtm/content"],

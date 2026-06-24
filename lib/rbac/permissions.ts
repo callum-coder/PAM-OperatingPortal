@@ -11,7 +11,9 @@ export type PermissionId =
   | "gtm.content.read"
   | "gtm.content.write"
   | "gtm.experiments.read"
-  | "gtm.experiments.write";
+  | "gtm.experiments.write"
+  | "gtm.leads.read"
+  | "gtm.leads.write";
 
 export type Permission = {
   id: PermissionId;
@@ -30,6 +32,8 @@ export const ALL_PERMISSIONS: Permission[] = [
   { id: "gtm.content.write", module: "gtm", description: "Manage content pipeline" },
   { id: "gtm.experiments.read", module: "gtm", description: "Read GTM experiments" },
   { id: "gtm.experiments.write", module: "gtm", description: "Manage GTM experiments" },
+  { id: "gtm.leads.read", module: "gtm", description: "Read GTM lead engine" },
+  { id: "gtm.leads.write", module: "gtm", description: "Manage GTM lead engine" },
 ];
 
 const allPermissionIds = ALL_PERMISSIONS.map((permission) => permission.id);
@@ -39,7 +43,7 @@ const allReadPermissionIds = ALL_PERMISSIONS.filter((permission) =>
 
 export const ROLE_PERMISSIONS: Record<string, PermissionId[]> = {
   owner: allPermissionIds,
-  sales: ["gtm.outreach.read", "gtm.outreach.write", "gtm.briefs.read"],
+  sales: ["gtm.outreach.read", "gtm.outreach.write", "gtm.briefs.read", "gtm.leads.read", "gtm.leads.write"],
   ops: ["gtm.briefs.read", "gtm.content.read", "gtm.content.write"],
   engineering: [],
   finance: [],

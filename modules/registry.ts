@@ -3,6 +3,7 @@ import {
   BriefcaseBusiness,
   FlaskConical,
   LayoutDashboard,
+  Magnet,
   Megaphone,
   Newspaper,
   Radar,
@@ -44,6 +45,12 @@ export const modules: ModuleRegistryEntry[] = [
         href: "/gtm/briefs",
         requiredPermission: "gtm.briefs.read",
         icon: BriefcaseBusiness,
+      },
+      {
+        label: "Leads",
+        href: "/gtm/leads",
+        requiredPermission: "gtm.leads.read",
+        icon: Magnet,
       },
       {
         label: "Outreach",

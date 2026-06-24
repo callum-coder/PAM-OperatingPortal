@@ -87,6 +87,35 @@ export async function getContentItem(id: string): Promise<ContentItemDetail | nu
   return (data ?? null) as ContentItemDetail | null;
 }
 
+export type LeadPlayRow = {
+  id: string;
+  title: string;
+  channel: string;
+  audience: string | null;
+  hook: string | null;
+  lead_magnet: string | null;
+  first_action: string | null;
+  impact: number | null;
+  ease: number | null;
+  priority_score: number | null;
+  status: string | null;
+};
+
+export async function getLeadPlays(): Promise<LeadPlayRow[]> {
+  if (!hasPortalSupabaseConfig()) return [];
+
+  const supabase = createPortalAdminClient();
+  const { data, error } = await supabase
+    .from("gtm_lead_plays")
+    .select("id,title,channel,audience,hook,lead_magnet,first_action,impact,ease,priority_score,status")
+    .order("priority_score", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (error) throw new Error(`Failed to load lead plays: ${error.message}`);
+  return (data ?? []) as LeadPlayRow[];
+}
+
 export async function getExperiments(): Promise<ExperimentRow[]> {
   if (!hasPortalSupabaseConfig()) return [];
 

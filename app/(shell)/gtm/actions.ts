@@ -9,6 +9,7 @@ import {
 } from "@/lib/gtm/entity-inputs";
 import { buildSignalStatusUpdate, type SignalWorkflowStatus } from "@/lib/gtm/signal-workflow";
 import { executeContentWriter } from "@/lib/gtm/agents/content-writer";
+import { executeLeadFinder } from "@/lib/gtm/agents/lead-finder";
 import { requirePermission } from "@/lib/rbac/guard";
 import { createPortalAdminClient } from "@/lib/supabase";
 
@@ -277,6 +278,15 @@ export async function setContentStage(formData: FormData) {
 
   revalidatePath("/gtm/content");
   revalidatePath(`/gtm/content/${itemId}`);
+}
+
+// Runs the Lead Finder agent to refresh the Core Four lead-gen plays.
+export async function generateLeadPlays() {
+  await requirePermission("gtm.leads.write");
+  await executeLeadFinder();
+  revalidatePath("/gtm/leads");
+  revalidatePath("/gtm");
+  revalidatePath("/ai-team");
 }
 
 export async function createExperiment(
