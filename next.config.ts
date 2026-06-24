@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
   // Run-now action, and the content pipeline's Draft action).
   outputFileTracingIncludes: {
     "/api/cron/agents/content": ["./doctrine/**/*"],
+    "/api/cron/briefs": ["./doctrine/**/*"],
+    "/api/cron/all": ["./doctrine/**/*"],
     "/ai-team": ["./doctrine/**/*"],
     "/gtm/content": ["./doctrine/**/*"],
     "/gtm/content/[id]": ["./doctrine/**/*"],
