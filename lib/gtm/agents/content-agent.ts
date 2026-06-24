@@ -22,6 +22,15 @@ const SUBSYSTEM = "content_agent";
 const RUNTIME_INSTRUCTION =
   "You are running as a scheduled daily agent. Reason carefully using the doctrine above, then return only the structured ideas via the required output format. Do not include any commentary outside the structured output.";
 
+export type ContentAgentExecution = {
+  ok: boolean;
+  status: "ok" | "skipped" | "error";
+  ideas: number;
+  itemsCreated: number;
+  message: string;
+};
+
+// Cron entry point: authenticates, then runs the shared execution path.
 export async function runContentAgentCron(request: Request) {
   const auth = verifyCronRequest(request);
   if (!auth.ok) {
@@ -35,9 +44,26 @@ export async function runContentAgentCron(request: Request) {
     );
   }
 
+  const result = await executeContentStrategist();
+  return Response.json(
+    {
+      ok: result.ok,
+      agent: AGENT_ID,
+      status: result.status,
+      ideas: result.ideas,
+      itemsCreated: result.itemsCreated,
+      ...(result.ok ? {} : { error: result.message }),
+    },
+    { status: result.status === "error" ? 500 : 200 },
+  );
+}
+
+// Shared execution: used by the cron route and by the in-app "Run now" action.
+// Callers are responsible for their own authorization (cron secret or RBAC).
+export async function executeContentStrategist(): Promise<ContentAgentExecution> {
   const agent = getAgent(AGENT_ID);
   if (!agent) {
-    return Response.json({ ok: false, error: `Unknown agent: ${AGENT_ID}` }, { status: 500 });
+    return { ok: false, status: "error", ideas: 0, itemsCreated: 0, message: `Unknown agent: ${AGENT_ID}` };
   }
 
   const startedAt = new Date().toISOString();
@@ -87,7 +113,7 @@ export async function runContentAgentCron(request: Request) {
       finished_at: new Date().toISOString(),
     });
 
-    return Response.json({ ok: true, agent: agent.id, status: "ok", ideas: ideas.length, itemsCreated });
+    return { ok: true, status: "ok", ideas: ideas.length, itemsCreated, message: headline };
   } catch (error) {
     const configIssue = error instanceof AgentConfigError;
     const message = error instanceof Error ? error.message : "Unknown content agent error";
@@ -121,10 +147,13 @@ export async function runContentAgentCron(request: Request) {
       finished_at: new Date().toISOString(),
     });
 
-    return Response.json(
-      { ok: configIssue, agent: AGENT_ID, status: configIssue ? "skipped" : "error", error: message },
-      { status: configIssue ? 200 : 500 },
-    );
+    return {
+      ok: configIssue,
+      status: configIssue ? "skipped" : "error",
+      ideas: 0,
+      itemsCreated: 0,
+      message,
+    };
   }
 }
 

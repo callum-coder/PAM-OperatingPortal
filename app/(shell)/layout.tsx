@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Activity, ShieldCheck } from "lucide-react";
+import { Activity, Bot, ShieldCheck } from "lucide-react";
 
 import { hasPermission } from "@/lib/rbac/permissions";
 import { requireUser } from "@/lib/rbac/guard";
@@ -42,6 +42,12 @@ export default async function ShellLayout({
               <Activity size={18} />
               Dashboard
             </Link>
+            {hasPermission(user.roles, "gtm.briefs.read") ? (
+              <Link className="portal-nav-link" href="/ai-team">
+                <Bot size={18} />
+                AI Team
+              </Link>
+            ) : null}
           </div>
 
           {moduleNav.map((module) => (
