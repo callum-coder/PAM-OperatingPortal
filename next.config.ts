@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
     "/api/cron/agents/content": ["./doctrine/**/*"],
     "/ai-team": ["./doctrine/**/*"],
     "/gtm/content": ["./doctrine/**/*"],
+    "/gtm/content/[id]": ["./doctrine/**/*"],
   },
 };
 

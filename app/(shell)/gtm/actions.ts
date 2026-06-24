@@ -213,7 +213,70 @@ export async function draftContentItem(formData: FormData) {
 
   await executeContentWriter(itemId);
   revalidatePath("/gtm/content");
+  revalidatePath(`/gtm/content/${itemId}`);
   revalidatePath("/ai-team");
+}
+
+const CONTENT_STAGES = new Set(["idea", "drafting", "review", "scheduled", "published"]);
+
+// Saves a human-edited draft without changing the stage.
+export async function saveContentDraft(formData: FormData) {
+  await requirePermission("gtm.content.write");
+
+  const itemId = String(formData.get("item_id") ?? "");
+  if (!itemId) {
+    return;
+  }
+
+  const draft = String(formData.get("draft") ?? "");
+  const supabase = createPortalAdminClient();
+  const { error } = await supabase
+    .from("gtm_content_items")
+    .update({ draft, updated_at: new Date().toISOString() })
+    .eq("id", itemId);
+
+  if (error) {
+    throw new Error(`Failed to save draft: ${error.message}`);
+  }
+
+  revalidatePath(`/gtm/content/${itemId}`);
+}
+
+// Advances (or returns) a content item through the pipeline stages.
+export async function setContentStage(formData: FormData) {
+  await requirePermission("gtm.content.write");
+
+  const itemId = String(formData.get("item_id") ?? "");
+  const stage = String(formData.get("stage") ?? "");
+  if (!itemId || !CONTENT_STAGES.has(stage)) {
+    return;
+  }
+
+  const now = new Date().toISOString();
+  const update: Record<string, unknown> = {
+    stage,
+    stage_changed_at: now,
+    updated_at: now,
+  };
+
+  const scheduledFor = String(formData.get("scheduled_for") ?? "").trim();
+  const publishedUrl = String(formData.get("published_url") ?? "").trim();
+  if (stage === "scheduled" && scheduledFor) {
+    update.scheduled_for = scheduledFor;
+  }
+  if (stage === "published" && publishedUrl) {
+    update.published_url = publishedUrl;
+  }
+
+  const supabase = createPortalAdminClient();
+  const { error } = await supabase.from("gtm_content_items").update(update).eq("id", itemId);
+
+  if (error) {
+    throw new Error(`Failed to update content stage: ${error.message}`);
+  }
+
+  revalidatePath("/gtm/content");
+  revalidatePath(`/gtm/content/${itemId}`);
 }
 
 export async function createExperiment(

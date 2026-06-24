@@ -57,6 +57,36 @@ export async function getContentItems(): Promise<ContentItemRow[]> {
   return (data ?? []) as ContentItemRow[];
 }
 
+export type ContentItemDetail = {
+  id: string;
+  title: string;
+  target_keyword: string | null;
+  stage: string | null;
+  priority_score: number | null;
+  notes: string | null;
+  draft: string | null;
+  conversion_path: string | null;
+  scheduled_for: string | null;
+  published_url: string | null;
+  updated_at: string | null;
+};
+
+export async function getContentItem(id: string): Promise<ContentItemDetail | null> {
+  if (!hasPortalSupabaseConfig()) return null;
+
+  const supabase = createPortalAdminClient();
+  const { data, error } = await supabase
+    .from("gtm_content_items")
+    .select(
+      "id,title,target_keyword,stage,priority_score,notes,draft,conversion_path,scheduled_for,published_url,updated_at",
+    )
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) throw new Error(`Failed to load content item: ${error.message}`);
+  return (data ?? null) as ContentItemDetail | null;
+}
+
 export async function getExperiments(): Promise<ExperimentRow[]> {
   if (!hasPortalSupabaseConfig()) return [];
 

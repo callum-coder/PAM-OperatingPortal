@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { getContentItems } from "@/lib/gtm/subsystem-data";
 import { requirePermission } from "@/lib/rbac/guard";
 import { hasPermission } from "@/lib/rbac/permissions";
@@ -26,7 +28,9 @@ export default async function ContentPage() {
             {items.length ? items.map((item) => (
               <div className="grid items-center gap-2 py-4 md:grid-cols-[1fr_84px_70px_92px]" key={item.id}>
                 <div>
-                  <p className="font-medium">{item.title}</p>
+                  <Link className="font-medium hover:underline" href={`/gtm/content/${item.id}`}>
+                    {item.title}
+                  </Link>
                   <p className="portal-muted">{item.target_keyword ?? "No keyword"}</p>
                 </div>
                 <p className="portal-muted uppercase">{item.stage}</p>
