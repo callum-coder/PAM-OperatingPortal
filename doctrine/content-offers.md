@@ -29,10 +29,24 @@
   hiring a letting agent or an accountant — and stop fielding maintenance calls."*
   Two intertwined jobs: **regulatory survival** (MTD + compliance) and
   **management relief** (maintenance, reports).
-- **The offer mechanic:** SaaS subscription, tiered. ⚠️ *Exact tiers/prices/trial
-  pending — paste from propertyaimanager.com/#pricing (the page blocks automated
-  fetch). Until then, treat the offer step as "start the free experience → paid
-  subscription" and revise when tiers are confirmed.*
+- **The offer mechanic:** **14-day free trial, no credit card**, converting to a
+  tiered monthly SaaS subscription priced by portfolio size (15% off annual,
+  cancel any time). The trial *is* the offer — every conversion-stage CTA leads
+  to "Start your 14-day trial." Tiers:
+  - **Solo** — £12/mo · 1–3 properties. MTD quarterly filing, compliance
+    certificate tracking, EICR/Gas Safety/EPC alerts, 10GB document vault, receipt
+    scan & AI categorisation, tenancy & rent ledger, tenant app.
+  - **Portfolio** — £24/mo · 4–10 properties (*most popular*). Everything in Solo
+    plus GoCardless rent collection (PAM Pay), WhatsApp tenant triage, contractor
+    Google Maps search, AST creation & e-signature, tenant referencing (Canopy),
+    unlimited storage, priority email support.
+  - **Serious** — £49/mo · 11–25 properties. Everything in Portfolio plus PAM
+    voice call agent, maintenance triage & auto-booking, team sub-accounts (3
+    users), landlord-branded tenant portal, Xero sync, bulk onboarding.
+    **£1.50/property over 25.**
+  - **Segment content by tier persona:** Solo = accidental/small landlord (1–3),
+    Portfolio = growing landlord (4–10), Serious = professional portfolio (11+).
+    A piece should target one persona; the pain and proof differ across them.
 - **Voice:** plain, reassuring, UK English. The reader is often anxious and
   non-expert about tax and compliance — calm authority, never jargon or scare-tactics.
 
@@ -161,15 +175,22 @@ keywords.
 
 ## 7. The offer mechanic — SaaS-specific (Bush, *Product-Led Growth*)
 
-In B2C SaaS the offer is the **free→paid path**, not a one-off pitch. Every idea
-must move the reader one notch along it. Match the ask to the awareness stage:
+The offer is the **14-day free trial → paid subscription** path (§0), not a
+one-off pitch. Every idea must move the reader one notch along it. Match the ask
+to the awareness stage:
 
-- Unaware / problem-aware → a **lead magnet** or value-first read (no signup ask).
-- Solution / product-aware → **start the free experience** (trial/freemium).
-- Most-aware → the **paid conversion** moment (what unlocks, why now).
+- Unaware / problem-aware → a **lead magnet** or value-first read (a compliance
+  checklist, an MTD-deadline explainer). **No trial ask** — earn the right first.
+- Solution / product-aware → **"Start your 14-day trial — no credit card."** Lean
+  on the no-card, cancel-anytime, no-risk framing to kill hesitation.
+- Most-aware → the **trial-to-paid** nudge: which tier fits their portfolio, what
+  it unlocks (e.g. rent collection on Portfolio), and why now (MTD deadline).
 
-Reject ideas that ask for too much too early (signup from an unaware reader) or
-too little too late (no CTA for a ready reader).
+Use the ROI frame freely: £12–49/mo vs a letting agent at 8–15% of rent. For a
+landlord paying an agent, PAM is often cheaper than one month of fees.
+
+Reject ideas that ask for too much too early (trial signup from an unaware reader)
+or too little too late (no CTA for a ready reader).
 
 ---
 
