@@ -59,7 +59,7 @@ describe("normalizeContentItemInput", () => {
         product_fit: 4,
         mtd_urgency: 5,
         effort: 2,
-        priority_score: 43,
+        priority_score: 90,
         notes: null,
       },
     });

@@ -5,6 +5,7 @@ import {
   buildContentAgentInput,
   contentIdeasOutputSchema,
   formatIdeaNotes,
+  ideaPriorityScore,
   mapIdeaToContentRow,
   type ContentIdea,
   type ContentSnapshot,
@@ -33,7 +34,7 @@ describe("mapIdeaToContentRow", () => {
     expect(row.stage).toBe("idea");
     expect(row.target_keyword).toBeNull();
     expect(row.conversion_path).toBe("lead_magnet");
-    expect(row.priority_score).toBe(20);
+    expect(row.priority_score).toBe(80);
     expect(row.notes).toContain("Weakest lever");
     expect(row.notes).toContain("Relevance 5/5");
   });
@@ -94,6 +95,14 @@ describe("agent registry", () => {
       }
     }
     expect(agents.filter((agent) => agent.reportsTo === null)).toHaveLength(1);
+  });
+});
+
+describe("ideaPriorityScore", () => {
+  it("normalizes relevance × value onto a 0-100 scale", () => {
+    expect(ideaPriorityScore(5, 5)).toBe(100);
+    expect(ideaPriorityScore(5, 4)).toBe(80);
+    expect(ideaPriorityScore(1, 1)).toBe(4);
   });
 });
 

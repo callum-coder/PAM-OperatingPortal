@@ -99,6 +99,18 @@ export function formatIdeaNotes(idea: ContentIdea): string {
   ].join("\n");
 }
 
+// The agent scores relevance × value (each 1..5 → 1..25). Normalize onto the
+// shared 0..100 content priority scale so agent ideas and manually-created
+// items rank in the same queue.
+export const MAX_IDEA_PRIORITY = 25;
+
+export function ideaPriorityScore(relevanceScore: number, valueScore: number): number {
+  return Math.max(
+    0,
+    Math.min(100, Math.round(((relevanceScore * valueScore) / MAX_IDEA_PRIORITY) * 100)),
+  );
+}
+
 export type ContentItemRow = {
   product: string;
   title: string;
@@ -119,6 +131,6 @@ export function mapIdeaToContentRow(idea: ContentIdea, product: string): Content
     stage: "idea",
     notes: formatIdeaNotes(idea),
     conversion_path: idea.offer_mechanic,
-    priority_score: idea.relevance_score * idea.value_score,
+    priority_score: ideaPriorityScore(idea.relevance_score, idea.value_score),
   };
 }

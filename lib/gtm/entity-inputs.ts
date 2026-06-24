@@ -1,4 +1,4 @@
-import { scoreContentPriority } from "./operating-loop";
+import { normalizeContentPriority, scoreContentPriority } from "./operating-loop";
 
 type NormalizeResult<T> = { value: T } | { error: string };
 
@@ -60,12 +60,14 @@ export function normalizeContentItemInput(input: RawInput): NormalizeResult<{
       product_fit: productFit,
       mtd_urgency: mtdUrgency,
       effort,
-      priority_score: scoreContentPriority({
-        keywordIntent,
-        productFit,
-        mtdUrgency,
-        effort,
-      }),
+      priority_score: normalizeContentPriority(
+        scoreContentPriority({
+          keywordIntent,
+          productFit,
+          mtdUrgency,
+          effort,
+        }),
+      ),
       notes: text(input.notes) || null,
     },
   };

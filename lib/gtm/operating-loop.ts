@@ -52,6 +52,15 @@ export function scoreContentPriority(input: ContentPriorityInput): number {
   return keywordIntent * 3 + productFit * 3 + mtdUrgency * 4 - effort * 2;
 }
 
+// Raw scoreContentPriority ranges 0..48 (all-1 inputs with max effort floors at
+// 0; max-fit/urgency, min-effort tops out at 48). The shared content priority
+// scale across the portal is 0..100, so normalize raw scores onto it.
+export const MAX_CONTENT_PRIORITY = 48;
+
+export function normalizeContentPriority(raw: number): number {
+  return Math.max(0, Math.min(100, Math.round((raw / MAX_CONTENT_PRIORITY) * 100)));
+}
+
 export function sortSignalsByPriority<T extends GtmSignal>(signals: T[]): T[] {
   return [...signals].sort((a, b) => {
     const statusDelta = statusRank[b.status] - statusRank[a.status];

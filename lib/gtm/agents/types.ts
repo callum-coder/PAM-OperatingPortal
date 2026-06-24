@@ -1,6 +1,7 @@
 export type AgentId =
   | "gtm-lead"
   | "content-strategist"
+  | "content-writer"
   | "brief-analyst"
   | "lead-finder"
   | "competitor-scout"

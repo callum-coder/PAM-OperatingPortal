@@ -35,6 +35,21 @@ export const agents: AgentDefinition[] = [
     status: "active",
   },
   {
+    id: "content-writer",
+    name: "Content Writer",
+    role: "Drafting",
+    reportsTo: "content-strategist",
+    description:
+      "Drafts an approved idea into a full first draft on demand, grounded in the Drafting doctrine and the strategist's brief, then advances it to review.",
+    module: "gtm",
+    model: null,
+    doctrine: ["content-drafting.md"],
+    schedule: null,
+    outputs: ["gtm_content_items", "gtm_agent_runs"],
+    tools: "none",
+    status: "active",
+  },
+  {
     id: "brief-analyst",
     name: "Brief Analyst",
     role: "Weekly synthesis",

@@ -8,6 +8,7 @@ import {
   normalizeExperimentInput,
 } from "@/lib/gtm/entity-inputs";
 import { buildSignalStatusUpdate, type SignalWorkflowStatus } from "@/lib/gtm/signal-workflow";
+import { executeContentWriter } from "@/lib/gtm/agents/content-writer";
 import { requirePermission } from "@/lib/rbac/guard";
 import { createPortalAdminClient } from "@/lib/supabase";
 
@@ -198,6 +199,21 @@ export async function createContentItem(
   revalidatePath("/gtm");
   revalidatePath("/gtm/content");
   return { ok: true };
+}
+
+// Hands an approved idea to the Content Writer agent, which drafts it and moves
+// it to the review stage.
+export async function draftContentItem(formData: FormData) {
+  await requirePermission("gtm.content.write");
+
+  const itemId = String(formData.get("item_id") ?? "");
+  if (!itemId) {
+    return;
+  }
+
+  await executeContentWriter(itemId);
+  revalidatePath("/gtm/content");
+  revalidatePath("/ai-team");
 }
 
 export async function createExperiment(
