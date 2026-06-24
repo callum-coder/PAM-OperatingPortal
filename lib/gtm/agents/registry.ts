@@ -1,0 +1,105 @@
+import type { AgentDefinition, AgentId } from "./types";
+
+// The GTM AI-Team roster. The GTM Lead is the coordinator; every other agent
+// reports to it. Only agents with a real doctrine and build are "active"; the
+// rest are "planned" so the AI-Team section can show the intended org chart.
+export const agents: AgentDefinition[] = [
+  {
+    id: "gtm-lead",
+    name: "GTM Lead",
+    role: "Coordinator",
+    reportsTo: null,
+    description:
+      "Orchestrates the GTM agent fleet, rolls up their runs, and surfaces the daily worklist.",
+    module: "gtm",
+    model: null,
+    doctrine: [],
+    schedule: null,
+    outputs: ["system_status"],
+    tools: "none",
+    status: "planned",
+  },
+  {
+    id: "content-strategist",
+    name: "Content Strategist",
+    role: "Content ideation",
+    reportsTo: "gtm-lead",
+    description:
+      "Generates landlord-relevant content ideas daily, grounded in the Offers & Relevance doctrine and the live content pipeline.",
+    module: "gtm",
+    model: null,
+    doctrine: ["content-offers.md"],
+    schedule: "0 6 * * *",
+    outputs: ["gtm_content_items", "gtm_agent_runs"],
+    tools: "none",
+    status: "active",
+  },
+  {
+    id: "brief-analyst",
+    name: "Brief Analyst",
+    role: "Weekly synthesis",
+    reportsTo: "gtm-lead",
+    description:
+      "Synthesises the weekly brief from PAM read-only metrics and emits structured recommended actions.",
+    module: "gtm",
+    model: null,
+    doctrine: [],
+    schedule: null,
+    outputs: ["gtm_briefs", "gtm_brief_actions"],
+    tools: "read-only",
+    status: "planned",
+  },
+  {
+    id: "lead-finder",
+    name: "Lead Finder",
+    role: "Demand generation",
+    reportsTo: "gtm-lead",
+    description:
+      "Sources landlord leads across the Core Four channels with the MTD deadline as the outreach hook.",
+    module: "gtm",
+    model: null,
+    doctrine: [],
+    schedule: null,
+    outputs: ["gtm_signals"],
+    tools: "read-only",
+    status: "planned",
+  },
+  {
+    id: "competitor-scout",
+    name: "Competitor Scout",
+    role: "Market monitoring",
+    reportsTo: "gtm-lead",
+    description:
+      "Watches competitor and regulation changes, classifies significance, and proposes content responses.",
+    module: "gtm",
+    model: null,
+    doctrine: [],
+    schedule: null,
+    outputs: ["gtm_competitor_changes", "gtm_signals"],
+    tools: "read-only",
+    status: "planned",
+  },
+  {
+    id: "outreach-operator",
+    name: "Outreach Operator",
+    role: "Outbound",
+    reportsTo: "gtm-lead",
+    description:
+      "Drafts personalised outreach behind the readiness gate. Draft-only to start; auto-send is a gated graduation.",
+    module: "gtm",
+    model: null,
+    doctrine: [],
+    schedule: null,
+    outputs: ["gtm_sequence_enrollments", "gtm_signals"],
+    tools: "read-only",
+    status: "planned",
+  },
+];
+
+export function getAgent(id: AgentId): AgentDefinition | undefined {
+  return agents.find((agent) => agent.id === id);
+}
+
+export function listAgents(): AgentDefinition[] {
+  return agents;
+}
