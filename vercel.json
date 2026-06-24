@@ -1,0 +1,9 @@
+{
+  "crons": [
+    { "path": "/api/cron/briefs", "schedule": "0 7 * * 1" },
+    { "path": "/api/cron/competitors", "schedule": "0 6 * * *" },
+    { "path": "/api/cron/experiments", "schedule": "0 5 * * *" },
+    { "path": "/api/cron/content", "schedule": "0 8 * * 1" },
+    { "path": "/api/cron/outreach", "schedule": "0 9 * * *" }
+  ]
+}

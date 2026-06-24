@@ -1,0 +1,14 @@
+revoke all on table portal_users from anon, authenticated;
+revoke all on table roles from anon, authenticated;
+revoke all on table user_roles from anon, authenticated;
+revoke all on table permissions from anon, authenticated;
+revoke all on table role_permissions from anon, authenticated;
+revoke all on table system_status from anon, authenticated;
+revoke all on table gtm_briefs from anon, authenticated;
+revoke all on table gtm_competitor_watch from anon, authenticated;
+revoke all on table gtm_competitor_changes from anon, authenticated;
+revoke all on table gtm_experiments from anon, authenticated;
+revoke all on table gtm_content_items from anon, authenticated;
+revoke all on table gtm_sequences from anon, authenticated;
+revoke all on table gtm_sequence_enrollments from anon, authenticated;
+revoke all on table gtm_suppression from anon, authenticated;
