@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Bot, Clock, Network, Play } from "lucide-react";
 
 import { requirePermission } from "@/lib/rbac/guard";
@@ -115,7 +116,9 @@ function AgentCard({
             <Bot size={18} />
           </span>
           <div>
-            <p className="font-semibold">{agent.name}</p>
+            <Link className="font-semibold hover:underline" href={`/ai-team/${agent.id}`}>
+              {agent.name}
+            </Link>
             <p className="portal-muted">{agent.role}</p>
           </div>
         </div>

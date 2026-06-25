@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { agents, getAgent } from "./registry";
 import {
   buildContentAgentInput,
+  buildContentIdeasSlackText,
   contentIdeasOutputSchema,
   formatIdeaNotes,
   ideaPriorityScore,
@@ -95,6 +96,25 @@ describe("agent registry", () => {
       }
     }
     expect(agents.filter((agent) => agent.reportsTo === null)).toHaveLength(1);
+  });
+});
+
+describe("buildContentIdeasSlackText", () => {
+  const lower: ContentIdea = { ...idea, title: "A lower-scoring idea", relevance_score: 2, value_score: 2 };
+
+  it("ranks ideas by score, caps at the top 3, and links to the pipeline", () => {
+    const text = buildContentIdeasSlackText([lower, idea], "https://portal.example");
+    expect(text).toContain("2 new ideas");
+    // higher-scoring idea ranked first
+    expect(text.indexOf(idea.title)).toBeLessThan(text.indexOf(lower.title));
+    expect(text).toContain("(80/100)");
+    expect(text).toContain("https://portal.example/gtm/content");
+  });
+
+  it("omits the link when no base URL is configured", () => {
+    const text = buildContentIdeasSlackText([idea], null);
+    expect(text).toContain("1 new idea.");
+    expect(text).not.toContain("Review & draft");
   });
 });
 

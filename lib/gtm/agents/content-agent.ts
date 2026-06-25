@@ -8,9 +8,11 @@ import { getMtdCountdown } from "@/lib/gtm/briefs";
 import { composeDoctrine } from "./doctrine";
 import { getAgent } from "./registry";
 import { logAgentRun } from "./runs";
+import { sendAgentMessage } from "./messages";
 import { AgentConfigError, invokeStructuredAgent } from "./runner";
 import {
   buildContentAgentInput,
+  buildContentIdeasSlackText,
   contentIdeasOutputSchema,
   mapIdeaToContentRow,
   type ContentIdea,
@@ -112,6 +114,14 @@ export async function executeContentStrategist(): Promise<ContentAgentExecution>
       started_at: startedAt,
       finished_at: new Date().toISOString(),
     });
+
+    if (ideas.length) {
+      await sendAgentMessage({
+        agentId: agent.id,
+        text: buildContentIdeasSlackText(ideas, process.env.PORTAL_BASE_URL ?? null),
+        context: { ideas: ideas.length, itemsCreated },
+      });
+    }
 
     return { ok: true, status: "ok", ideas: ideas.length, itemsCreated, message: headline };
   } catch (error) {

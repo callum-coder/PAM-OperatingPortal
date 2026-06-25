@@ -111,6 +111,28 @@ export function ideaPriorityScore(relevanceScore: number, valueScore: number): n
   );
 }
 
+// Slack message the Content Strategist posts after a run: the top ideas by
+// score, plus a link back to the pipeline for review.
+export function buildContentIdeasSlackText(ideas: ContentIdea[], baseUrl: string | null): string {
+  const ranked = [...ideas]
+    .sort(
+      (a, b) =>
+        ideaPriorityScore(b.relevance_score, b.value_score) -
+        ideaPriorityScore(a.relevance_score, a.value_score),
+    )
+    .slice(0, 3);
+
+  const lines = ranked.map(
+    (idea, index) =>
+      `${index + 1}. ${idea.title} (${ideaPriorityScore(idea.relevance_score, idea.value_score)}/100)`,
+  );
+
+  const link = baseUrl ? `\nReview & draft: ${baseUrl}/gtm/content` : "";
+  const plural = ideas.length === 1 ? "" : "s";
+
+  return `Content Strategist — ${ideas.length} new idea${plural}. Top picks:\n${lines.join("\n")}${link}`;
+}
+
 export type ContentItemRow = {
   product: string;
   title: string;
