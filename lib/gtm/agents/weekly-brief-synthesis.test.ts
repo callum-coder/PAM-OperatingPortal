@@ -37,6 +37,21 @@ describe("buildBriefSynthesisInput", () => {
     const input = buildBriefSynthesisInput(context);
     expect(input).toContain("paying signals: not available");
   });
+
+  it("omits the CRM block when no CRM metrics are present", () => {
+    const input = buildBriefSynthesisInput({ ...context, crm: null });
+    expect(input).not.toContain("HubSpot CRM funnel");
+  });
+
+  it("includes the CRM funnel when HubSpot metrics are present", () => {
+    const input = buildBriefSynthesisInput({
+      ...context,
+      crm: { contacts: 512, leads: 88, deals: 24, subscriptions: 31 },
+    });
+    expect(input).toContain("HubSpot CRM funnel");
+    expect(input).toContain("contacts: 512");
+    expect(input).toContain("paying subscriptions: 31");
+  });
 });
 
 describe("mapBriefActionRow", () => {

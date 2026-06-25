@@ -27,21 +27,35 @@ export const weeklyBriefSchema = z.object({
 export type WeeklyBriefSynthesis = z.infer<typeof weeklyBriefSchema>;
 export type BriefAction = z.infer<typeof briefActionSchema>;
 
+export type CrmMetrics = {
+  contacts: number | null;
+  leads: number | null;
+  deals: number | null;
+  subscriptions: number | null;
+};
+
 export type BriefSynthesisContext = {
   product: string;
   periodStart: string;
   periodEnd: string;
   mtd: MtdCountdown;
   metrics: BriefMetrics;
+  crm?: CrmMetrics | null;
 };
 
 function metricLine(value: number | null, label: string): string {
   return value === null ? `  - ${label}: not available` : `  - ${label}: ${value}`;
 }
 
+function hasAnyCrmMetric(crm: CrmMetrics | null | undefined): crm is CrmMetrics {
+  return Boolean(
+    crm && (crm.contacts !== null || crm.leads !== null || crm.deals !== null || crm.subscriptions !== null),
+  );
+}
+
 export function buildBriefSynthesisInput(context: BriefSynthesisContext): string {
   const m = context.metrics;
-  return [
+  const lines = [
     `Write this week's GTM brief for ${context.product.toUpperCase()}.`,
     `Period: ${context.periodStart} to ${context.periodEnd}.`,
     `${context.mtd.daysRemaining} days remain until the ${context.mtd.targetDate} MTD wedge date.`,
@@ -51,11 +65,27 @@ export function buildBriefSynthesisInput(context: BriefSynthesisContext): string
     metricLine(m.propertyRecords, "property records"),
     metricLine(m.payingSignals, "paying signals"),
     `  - tables available: ${m.tablesAvailable}`,
+  ];
+
+  if (hasAnyCrmMetric(context.crm)) {
+    lines.push(
+      "",
+      "HubSpot CRM funnel (live):",
+      metricLine(context.crm.contacts, "contacts"),
+      metricLine(context.crm.leads, "leads"),
+      metricLine(context.crm.deals, "deals"),
+      metricLine(context.crm.subscriptions, "paying subscriptions"),
+    );
+  }
+
+  lines.push(
     "",
     "Follow the doctrine. Produce a concise narrative brief and 2–5 structured",
     "actions. Ground everything in these metrics and the MTD context — do not",
     "invent numbers. Return only the structured brief.",
-  ].join("\n");
+  );
+
+  return lines.join("\n");
 }
 
 export type BriefActionRow = {
