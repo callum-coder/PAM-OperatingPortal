@@ -8,6 +8,9 @@ import {
   normalizeExperimentInput,
 } from "@/lib/gtm/entity-inputs";
 import { buildSignalStatusUpdate, type SignalWorkflowStatus } from "@/lib/gtm/signal-workflow";
+import { executeContentWriter } from "@/lib/gtm/agents/content-writer";
+import { executeLeadFinder } from "@/lib/gtm/agents/lead-finder";
+import { executeCompetitorScout } from "@/lib/gtm/agents/competitor-scout";
 import { requirePermission } from "@/lib/rbac/guard";
 import { createPortalAdminClient } from "@/lib/supabase";
 
@@ -198,6 +201,102 @@ export async function createContentItem(
   revalidatePath("/gtm");
   revalidatePath("/gtm/content");
   return { ok: true };
+}
+
+// Hands an approved idea to the Content Writer agent, which drafts it and moves
+// it to the review stage.
+export async function draftContentItem(formData: FormData) {
+  await requirePermission("gtm.content.write");
+
+  const itemId = String(formData.get("item_id") ?? "");
+  if (!itemId) {
+    return;
+  }
+
+  await executeContentWriter(itemId);
+  revalidatePath("/gtm/content");
+  revalidatePath(`/gtm/content/${itemId}`);
+  revalidatePath("/ai-team");
+}
+
+const CONTENT_STAGES = new Set(["idea", "drafting", "review", "scheduled", "published"]);
+
+// Saves a human-edited draft without changing the stage.
+export async function saveContentDraft(formData: FormData) {
+  await requirePermission("gtm.content.write");
+
+  const itemId = String(formData.get("item_id") ?? "");
+  if (!itemId) {
+    return;
+  }
+
+  const draft = String(formData.get("draft") ?? "");
+  const supabase = createPortalAdminClient();
+  const { error } = await supabase
+    .from("gtm_content_items")
+    .update({ draft, updated_at: new Date().toISOString() })
+    .eq("id", itemId);
+
+  if (error) {
+    throw new Error(`Failed to save draft: ${error.message}`);
+  }
+
+  revalidatePath(`/gtm/content/${itemId}`);
+}
+
+// Advances (or returns) a content item through the pipeline stages.
+export async function setContentStage(formData: FormData) {
+  await requirePermission("gtm.content.write");
+
+  const itemId = String(formData.get("item_id") ?? "");
+  const stage = String(formData.get("stage") ?? "");
+  if (!itemId || !CONTENT_STAGES.has(stage)) {
+    return;
+  }
+
+  const now = new Date().toISOString();
+  const update: Record<string, unknown> = {
+    stage,
+    stage_changed_at: now,
+    updated_at: now,
+  };
+
+  const scheduledFor = String(formData.get("scheduled_for") ?? "").trim();
+  const publishedUrl = String(formData.get("published_url") ?? "").trim();
+  if (stage === "scheduled" && scheduledFor) {
+    update.scheduled_for = scheduledFor;
+  }
+  if (stage === "published" && publishedUrl) {
+    update.published_url = publishedUrl;
+  }
+
+  const supabase = createPortalAdminClient();
+  const { error } = await supabase.from("gtm_content_items").update(update).eq("id", itemId);
+
+  if (error) {
+    throw new Error(`Failed to update content stage: ${error.message}`);
+  }
+
+  revalidatePath("/gtm/content");
+  revalidatePath(`/gtm/content/${itemId}`);
+}
+
+// Runs the Lead Finder agent to refresh the Core Four lead-gen plays.
+export async function generateLeadPlays() {
+  await requirePermission("gtm.leads.write");
+  await executeLeadFinder();
+  revalidatePath("/gtm/leads");
+  revalidatePath("/gtm");
+  revalidatePath("/ai-team");
+}
+
+// Runs the Competitor Scout: fetch each watched page, diff, and record changes.
+export async function scanCompetitors() {
+  await requirePermission("gtm.competitors.write");
+  await executeCompetitorScout();
+  revalidatePath("/gtm/competitors");
+  revalidatePath("/gtm");
+  revalidatePath("/ai-team");
 }
 
 export async function createExperiment(
