@@ -135,7 +135,9 @@ export async function getLeadPlays(): Promise<LeadPlayRow[]> {
     .order("created_at", { ascending: false })
     .limit(50);
 
-  if (error) throw new Error(`Failed to load lead plays: ${error.message}`);
+  // The lead-plays table may not be applied yet — degrade to an empty engine so
+  // the page still loads rather than 500ing.
+  if (error) return [];
   return (data ?? []) as LeadPlayRow[];
 }
 
