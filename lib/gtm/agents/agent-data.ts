@@ -22,6 +22,49 @@ export type AiTeamSnapshot = {
   latestRunByAgent: Record<string, AgentRunRow | undefined>;
 };
 
+export type AgentMessageRow = {
+  id: string;
+  agent_id: string;
+  channel: string | null;
+  text: string;
+  slack_ts: string | null;
+  status: string;
+  created_at: string;
+};
+
+export async function getAgentRunsForAgent(agentId: string, limit = 20): Promise<AgentRunRow[]> {
+  if (!hasPortalSupabaseConfig()) return [];
+
+  const supabase = createPortalAdminClient();
+  const { data, error } = await supabase
+    .from("gtm_agent_runs")
+    .select(
+      "id,agent_id,status,model,summary,items_created,input_tokens,output_tokens,error,started_at,finished_at,created_at",
+    )
+    .eq("agent_id", agentId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) return [];
+  return (data ?? []) as AgentRunRow[];
+}
+
+export async function getAgentMessages(agentId: string, limit = 20): Promise<AgentMessageRow[]> {
+  if (!hasPortalSupabaseConfig()) return [];
+
+  const supabase = createPortalAdminClient();
+  const { data, error } = await supabase
+    .from("gtm_agent_messages")
+    .select("id,agent_id,channel,text,slack_ts,status,created_at")
+    .eq("agent_id", agentId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  // Table may not be applied yet — degrade to no messages.
+  if (error) return [];
+  return (data ?? []) as AgentMessageRow[];
+}
+
 export async function getAiTeamSnapshot(): Promise<AiTeamSnapshot> {
   if (!hasPortalSupabaseConfig()) {
     return { runsByAgent: {}, latestRunByAgent: {} };
