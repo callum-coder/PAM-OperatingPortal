@@ -4,6 +4,8 @@ import { verifyCronRequest } from "@/lib/cron-auth";
 import { createPortalAdminClient, hasPortalSupabaseConfig } from "@/lib/supabase";
 import { upsertStatus, type StatusInput } from "@/lib/status";
 
+import { getHubspotGtmMetrics } from "@/lib/hubspot";
+
 import { buildBriefNarrative, getMtdCountdown, getWeeklyPeriod } from "./briefs";
 import { PamReadonlyConfigError, readPamBriefMetrics } from "./pam-readonly";
 import { syncSignalsForStatus } from "./status-jobs";
@@ -101,6 +103,7 @@ export async function runWeeklyBriefsCron(request: Request) {
 
 async function generateWeeklyBrief() {
   const metrics = await readPamBriefMetrics();
+  const crm = await getHubspotGtmMetrics();
   const { periodStart, periodEnd } = getWeeklyPeriod();
   const mtdCountdown = getMtdCountdown();
 
@@ -119,6 +122,7 @@ async function generateWeeklyBrief() {
       periodEnd,
       mtd: mtdCountdown,
       metrics,
+      crm,
     });
     narrative = synthesis.narrative;
     actions = synthesis.actions;
@@ -151,6 +155,7 @@ async function generateWeeklyBrief() {
       raw_metrics: {
         ...metrics,
         mtdCountdown,
+        crm,
         synthesis: { source, model },
       },
       narrative,

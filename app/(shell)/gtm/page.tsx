@@ -3,6 +3,7 @@ import { ArrowRight, ClipboardList, Target } from "lucide-react";
 
 import { getSystemStatus } from "@/lib/dashboard-data";
 import { getGtmOperatingSnapshot } from "@/lib/gtm/operating-data";
+import { getHubspotGtmMetrics, hasHubspotConfig } from "@/lib/hubspot";
 import { requirePermission } from "@/lib/rbac/guard";
 import { updateSignalStatus } from "./actions";
 import { CampaignForm, ManualInputForm, OutreachReadinessChecklist } from "./operating-forms";
@@ -20,6 +21,7 @@ export default async function GtmPage() {
   await requirePermission("gtm.briefs.read");
   const statuses = await getSystemStatus(["gtm"]);
   const snapshot = await getGtmOperatingSnapshot();
+  const crm = await getHubspotGtmMetrics();
 
   return (
     <div className="space-y-8">
@@ -28,6 +30,27 @@ export default async function GtmPage() {
           <p className="portal-kicker">Module 1</p>
           <h1 className="portal-title">GTM control room</h1>
         </div>
+      </section>
+
+      <section className="portal-panel">
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <div>
+            <p className="portal-kicker">HubSpot CRM</p>
+            <h2 className="portal-section-title">Pipeline</h2>
+          </div>
+        </div>
+        {hasHubspotConfig() ? (
+          <div className="grid gap-4 sm:grid-cols-4">
+            <PipelineMetric label="Contacts" value={crm.contacts} />
+            <PipelineMetric label="Leads" value={crm.leads} />
+            <PipelineMetric label="Deals" value={crm.deals} />
+            <PipelineMetric label="Paying subscriptions" value={crm.subscriptions} />
+          </div>
+        ) : (
+          <p className="portal-muted">
+            Connect HubSpot (set <code>HUBSPOT_ACCESS_TOKEN</code>) to see live pipeline metrics.
+          </p>
+        )}
       </section>
 
       <section className="grid gap-4 lg:grid-cols-5">
@@ -153,6 +176,15 @@ export default async function GtmPage() {
           ))}
         </Ledger>
       </section>
+    </div>
+  );
+}
+
+function PipelineMetric({ label, value }: { label: string; value: number | null }) {
+  return (
+    <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-4">
+      <p className="portal-muted">{label}</p>
+      <p className="mt-2 text-3xl font-semibold">{value === null ? "—" : value.toLocaleString("en-GB")}</p>
     </div>
   );
 }
