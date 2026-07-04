@@ -3,6 +3,7 @@ import {
   BriefcaseBusiness,
   Coins,
   FlaskConical,
+  HeartPulse,
   LayoutDashboard,
   Magnet,
   Megaphone,
@@ -53,6 +54,12 @@ export const modules: ModuleRegistryEntry[] = [
         href: "/gtm/journey",
         requiredPermission: "gtm.briefs.read",
         icon: Route,
+      },
+      {
+        label: "Customers",
+        href: "/gtm/customers",
+        requiredPermission: "gtm.customers.read",
+        icon: HeartPulse,
       },
       {
         label: "Leads",

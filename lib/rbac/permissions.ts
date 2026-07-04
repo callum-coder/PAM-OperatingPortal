@@ -14,6 +14,10 @@ export type PermissionId =
   | "gtm.experiments.write"
   | "gtm.leads.read"
   | "gtm.leads.write"
+  | "gtm.customers.read"
+  | "gtm.customers.write"
+  | "gtm.ai_work_items.read"
+  | "gtm.ai_work_items.write"
   | "finance.overview.read"
   | "finance.overview.write";
 
@@ -36,6 +40,10 @@ export const ALL_PERMISSIONS: Permission[] = [
   { id: "gtm.experiments.write", module: "gtm", description: "Manage GTM experiments" },
   { id: "gtm.leads.read", module: "gtm", description: "Read GTM lead engine" },
   { id: "gtm.leads.write", module: "gtm", description: "Manage GTM lead engine" },
+  { id: "gtm.customers.read", module: "gtm", description: "Read customer lifecycle profiles" },
+  { id: "gtm.customers.write", module: "gtm", description: "Manage customer lifecycle profiles" },
+  { id: "gtm.ai_work_items.read", module: "gtm", description: "Read AI work item review queue" },
+  { id: "gtm.ai_work_items.write", module: "gtm", description: "Manage AI work item review queue" },
   { id: "finance.overview.read", module: "finance", description: "Read the finance overview" },
   { id: "finance.overview.write", module: "finance", description: "Manage finance settings" },
 ];
@@ -47,8 +55,23 @@ const allReadPermissionIds = ALL_PERMISSIONS.filter((permission) =>
 
 export const ROLE_PERMISSIONS: Record<string, PermissionId[]> = {
   owner: allPermissionIds,
-  sales: ["gtm.outreach.read", "gtm.outreach.write", "gtm.briefs.read", "gtm.leads.read", "gtm.leads.write"],
-  ops: ["gtm.briefs.read", "gtm.content.read", "gtm.content.write"],
+  sales: [
+    "gtm.outreach.read",
+    "gtm.outreach.write",
+    "gtm.briefs.read",
+    "gtm.leads.read",
+    "gtm.leads.write",
+    "gtm.customers.read",
+    "gtm.ai_work_items.read",
+    "gtm.ai_work_items.write",
+  ],
+  ops: [
+    "gtm.briefs.read",
+    "gtm.content.read",
+    "gtm.content.write",
+    "gtm.customers.read",
+    "gtm.ai_work_items.read",
+  ],
   engineering: [],
   finance: ["finance.overview.read", "finance.overview.write"],
   support: [],

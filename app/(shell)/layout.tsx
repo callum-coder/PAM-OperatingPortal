@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Activity, Bot, ShieldCheck } from "lucide-react";
+import { Activity, Bot, Plug, ShieldCheck } from "lucide-react";
 
 import { hasPermission } from "@/lib/rbac/permissions";
 import { requireUser } from "@/lib/rbac/guard";
@@ -48,6 +48,10 @@ export default async function ShellLayout({
                 AI Team
               </Link>
             ) : null}
+            <Link className="portal-nav-link" href="/integrations">
+              <Plug size={18} />
+              Integrations
+            </Link>
           </div>
 
           {moduleNav.map((module) => (

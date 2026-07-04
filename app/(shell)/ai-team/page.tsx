@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Bot, Clock, Network, Play } from "lucide-react";
+import { Bot, ClipboardList, Clock, Network, Play } from "lucide-react";
 
 import { requirePermission } from "@/lib/rbac/guard";
 import { hasPermission } from "@/lib/rbac/permissions";
@@ -49,9 +49,17 @@ export default async function AiTeamPage() {
           <p className="portal-kicker">Operating layer</p>
           <h1 className="portal-title">AI Team</h1>
         </div>
-        <p className="portal-muted">
-          {agents.length} agents · {activeCount} active
-        </p>
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="portal-muted">
+            {agents.length} agents · {activeCount} active
+          </p>
+          {hasPermission(user.roles, "gtm.ai_work_items.read") ? (
+            <Link className="portal-nav-link inline-flex w-auto" href="/ai-team/work-items">
+              <ClipboardList size={16} />
+              Work items
+            </Link>
+          ) : null}
+        </div>
       </section>
 
       <section className="portal-panel">

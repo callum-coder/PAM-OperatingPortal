@@ -10,6 +10,7 @@ import {
 import { getTargets } from "@/lib/gtm/journey-data";
 import { readPamTrialFunnel } from "@/lib/gtm/pam-readonly";
 import { getHubspotGtmMetrics } from "@/lib/hubspot";
+import { DEFAULT_PRODUCT } from "@/lib/products";
 import { getReadableModules, hasPermission } from "@/lib/rbac/permissions";
 import { requireUser } from "@/lib/rbac/guard";
 
@@ -67,6 +68,23 @@ export default async function DashboardPage() {
         <MetricCard label="Visible modules" value={readableModules.length} />
         <MetricCard label="Subsystems reporting" value={statuses.length} />
         <MetricCard label="Needs attention" value={attention.length} />
+      </section>
+
+      <section className="portal-panel">
+        <div className="grid gap-4 md:grid-cols-[1fr_220px]">
+          <div>
+            <p className="portal-kicker">Primary product</p>
+            <h2 className="portal-section-title">{DEFAULT_PRODUCT.name}</h2>
+            <p className="portal-muted mt-2">
+              {DEFAULT_PRODUCT.audience} · {DEFAULT_PRODUCT.lifecycleModel} lifecycle. Future
+              products can share the same status, journey, agent, and integration contracts.
+            </p>
+          </div>
+          <Link className="portal-nav-link inline-flex h-fit w-auto md:justify-center" href="/gtm/customers">
+            <Route size={16} />
+            Customer 360
+          </Link>
+        </div>
       </section>
 
       {canSeeRevenue ? (
