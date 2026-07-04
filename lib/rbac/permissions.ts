@@ -13,7 +13,9 @@ export type PermissionId =
   | "gtm.experiments.read"
   | "gtm.experiments.write"
   | "gtm.leads.read"
-  | "gtm.leads.write";
+  | "gtm.leads.write"
+  | "finance.overview.read"
+  | "finance.overview.write";
 
 export type Permission = {
   id: PermissionId;
@@ -34,6 +36,8 @@ export const ALL_PERMISSIONS: Permission[] = [
   { id: "gtm.experiments.write", module: "gtm", description: "Manage GTM experiments" },
   { id: "gtm.leads.read", module: "gtm", description: "Read GTM lead engine" },
   { id: "gtm.leads.write", module: "gtm", description: "Manage GTM lead engine" },
+  { id: "finance.overview.read", module: "finance", description: "Read the finance overview" },
+  { id: "finance.overview.write", module: "finance", description: "Manage finance settings" },
 ];
 
 const allPermissionIds = ALL_PERMISSIONS.map((permission) => permission.id);
@@ -46,7 +50,7 @@ export const ROLE_PERMISSIONS: Record<string, PermissionId[]> = {
   sales: ["gtm.outreach.read", "gtm.outreach.write", "gtm.briefs.read", "gtm.leads.read", "gtm.leads.write"],
   ops: ["gtm.briefs.read", "gtm.content.read", "gtm.content.write"],
   engineering: [],
-  finance: [],
+  finance: ["finance.overview.read", "finance.overview.write"],
   support: [],
   viewer: allReadPermissionIds,
 };
