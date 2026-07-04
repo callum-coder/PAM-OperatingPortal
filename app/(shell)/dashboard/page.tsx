@@ -1,7 +1,16 @@
-import { AlertTriangle, CheckCircle2, Clock3 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Clock3, Route } from "lucide-react";
+import Link from "next/link";
 
 import { getSystemStatus } from "@/lib/dashboard-data";
-import { getReadableModules } from "@/lib/rbac/permissions";
+import {
+  conversionRate,
+  evaluateTargets,
+  flattenBriefMetrics,
+} from "@/lib/gtm/journey";
+import { getTargets } from "@/lib/gtm/journey-data";
+import { readPamTrialFunnel } from "@/lib/gtm/pam-readonly";
+import { getHubspotGtmMetrics } from "@/lib/hubspot";
+import { getReadableModules, hasPermission } from "@/lib/rbac/permissions";
 import { requireUser } from "@/lib/rbac/guard";
 
 const statusTone = {
@@ -14,10 +23,32 @@ const statusTone = {
 export default async function DashboardPage() {
   const user = await requireUser();
   const readableModules = getReadableModules(user.roles);
-  const statuses = await getSystemStatus(readableModules);
+  const canSeeRevenue = hasPermission(user.roles, "gtm.briefs.read");
+
+  const [statuses, funnel, crm, targetRows] = await Promise.all([
+    getSystemStatus(readableModules),
+    canSeeRevenue ? readPamTrialFunnel() : Promise.resolve(null),
+    canSeeRevenue
+      ? getHubspotGtmMetrics()
+      : Promise.resolve({ source: "hubspot" as const, contacts: null, leads: null, deals: null, subscriptions: null }),
+    canSeeRevenue ? getTargets() : Promise.resolve([]),
+  ]);
+
   const attention = statuses.flatMap((row) =>
     Array.isArray(row.needs_attention) ? row.needs_attention : [],
   );
+
+  const currentFlat = flattenBriefMetrics({ crm, funnel: funnel ?? {} });
+  const targets = evaluateTargets(
+    targetRows.map((row) => ({
+      metric: row.metric,
+      label: row.label,
+      target: row.target,
+      due_date: row.due_date,
+    })),
+    currentFlat,
+  );
+  const rate = conversionRate(funnel?.trialsStarted7d ?? null, funnel?.trialsConverted7d ?? null);
 
   return (
     <div className="space-y-8">
@@ -37,6 +68,58 @@ export default async function DashboardPage() {
         <MetricCard label="Subsystems reporting" value={statuses.length} />
         <MetricCard label="Needs attention" value={attention.length} />
       </section>
+
+      {canSeeRevenue ? (
+        <section className="portal-panel">
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <div>
+              <p className="portal-kicker">Trial → paid</p>
+              <h2 className="portal-section-title">Revenue engine</h2>
+            </div>
+            <Link className="portal-nav-link inline-flex w-auto" href="/gtm/journey">
+              <Route size={16} />
+              Journey
+            </Link>
+          </div>
+
+          {funnel ? (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              <RevenueTile label="Trials started (7d)" value={funnel.trialsStarted7d} />
+              <RevenueTile label="In trial" value={funnel.trialsActive} />
+              <RevenueTile label="Converted (7d)" value={funnel.trialsConverted7d} />
+              <RevenueTile label="Conversion" suffix={rate === null ? undefined : "%"} value={rate} />
+              <RevenueTile label="Paying" value={funnel.payingTotal} />
+            </div>
+          ) : (
+            <p className="portal-muted">
+              Trial funnel not connected yet — apply the trial-funnel view to the customer PAM
+              project to see it here.
+            </p>
+          )}
+
+          {targets.length ? (
+            <div className="mt-5 grid gap-3 md:grid-cols-2">
+              {targets.map((target) => (
+                <div key={target.metric}>
+                  <div className="flex items-center justify-between text-sm">
+                    <span>{target.label}</span>
+                    <span className="font-medium">
+                      {target.current ?? "—"} / {target.target}
+                      {target.progressPct !== null ? ` · ${target.progressPct}%` : ""}
+                    </span>
+                  </div>
+                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-[#e7ebe1]">
+                    <div
+                      className="h-full rounded-full bg-[#d9ff73]"
+                      style={{ width: `${Math.min(100, target.progressPct ?? 0)}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       <section className="portal-panel">
         <div className="mb-4 flex items-center justify-between gap-4">
@@ -79,6 +162,25 @@ export default async function DashboardPage() {
           <EmptyState title="No status rows yet" body="Run a cron route after Supabase is configured and subsystem cards will appear here." />
         )}
       </section>
+    </div>
+  );
+}
+
+function RevenueTile({
+  label,
+  value,
+  suffix,
+}: {
+  label: string;
+  value: number | null;
+  suffix?: string;
+}) {
+  return (
+    <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-4">
+      <p className="portal-muted text-sm">{label}</p>
+      <p className="mt-2 text-3xl font-semibold">
+        {value === null ? "—" : `${value.toLocaleString("en-GB")}${suffix ?? ""}`}
+      </p>
     </div>
   );
 }
