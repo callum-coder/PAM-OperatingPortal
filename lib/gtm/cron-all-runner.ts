@@ -3,10 +3,11 @@ import "server-only";
 import { verifyCronRequest } from "@/lib/cron-auth";
 import { runCompetitorStatusCron, runContentStatusCron, runExperimentsStatusCron, runOutreachStatusCron } from "./status-jobs";
 import { summarizeCronRun, type CronRunResult } from "./cron-all";
-import { runWeeklyBriefsCron } from "./weekly-briefs";
 
+// The weekly brief (LLM synthesis) runs on its own weekly cron, not in the
+// daily roll-up — a daily run would generate a new brief and duplicate its
+// actions every day.
 const jobs = [
-  ["briefs", runWeeklyBriefsCron],
   ["competitors", runCompetitorStatusCron],
   ["experiments", runExperimentsStatusCron],
   ["content", runContentStatusCron],

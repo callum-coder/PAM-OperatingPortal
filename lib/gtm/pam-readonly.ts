@@ -3,6 +3,7 @@ import "server-only";
 import postgres from "postgres";
 
 import type { BriefMetrics } from "./briefs";
+import type { TrialFunnelMetrics } from "./journey";
 import { mapWeeklyMetricsViewRow, type WeeklyMetricsViewRow } from "./pam-readonly-metrics";
 import {
   classifyPamReadonlyConfig,
@@ -94,6 +95,82 @@ async function readWeeklyMetricsView(sql: postgres.Sql): Promise<BriefMetrics | 
   `;
 
   return rows[0] ? mapWeeklyMetricsViewRow(rows[0]) : null;
+}
+
+// Reads the trial→paid funnel aggregate from the customer PAM database via the
+// portal_readonly.gtm_trial_funnel contract (customer-pam/002). Unlike the
+// brief metrics, this is an enhancement: any failure — missing config, missing
+// view, query error — degrades to null rather than throwing.
+export async function readPamTrialFunnel(): Promise<TrialFunnelMetrics | null> {
+  const url = process.env.PAM_DATABASE_URL_READONLY;
+  if (classifyPamReadonlyConfig(url) !== "postgres") {
+    return null;
+  }
+
+  const sql = postgres(url!, {
+    max: 1,
+    ssl: "require",
+    idle_timeout: 3,
+    connect_timeout: 10,
+  });
+
+  try {
+    const exists = await sql<{ exists: boolean }[]>`
+      select exists (
+        select 1
+        from information_schema.views
+        where table_schema = 'portal_readonly'
+          and table_name = 'gtm_trial_funnel'
+      )
+    `;
+
+    if (!exists[0]?.exists) {
+      return null;
+    }
+
+    const rows = await sql<
+      {
+        trials_active: number | null;
+        trials_started_7d: number | null;
+        trials_converted_7d: number | null;
+        trials_expired_7d: number | null;
+        paying_total: number | null;
+        avg_days_to_convert: string | number | null;
+      }[]
+    >`
+      select
+        trials_active,
+        trials_started_7d,
+        trials_converted_7d,
+        trials_expired_7d,
+        paying_total,
+        avg_days_to_convert
+      from portal_readonly.gtm_trial_funnel
+      limit 1
+    `;
+
+    const row = rows[0];
+    if (!row) return null;
+
+    return {
+      trialsActive: toNullableNumber(row.trials_active),
+      trialsStarted7d: toNullableNumber(row.trials_started_7d),
+      trialsConverted7d: toNullableNumber(row.trials_converted_7d),
+      trialsExpired7d: toNullableNumber(row.trials_expired_7d),
+      payingTotal: toNullableNumber(row.paying_total),
+      avgDaysToConvert: toNullableNumber(row.avg_days_to_convert),
+    };
+  } catch {
+    return null;
+  } finally {
+    await sql.end({ timeout: 2 });
+  }
+}
+
+function toNullableNumber(value: unknown): number | null {
+  if (value === null || value === undefined) return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
 }
 
 async function countPublicTables(sql: postgres.Sql): Promise<number> {

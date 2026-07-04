@@ -4,7 +4,7 @@ import { getContentItems } from "@/lib/gtm/subsystem-data";
 import { requirePermission } from "@/lib/rbac/guard";
 import { hasPermission } from "@/lib/rbac/permissions";
 import { ContentItemForm } from "../subsystem-forms";
-import { draftContentItem } from "../actions";
+import { draftContentItem, setContentStage } from "../actions";
 
 export default async function ContentPage() {
   const user = await requirePermission("gtm.content.read");
@@ -38,14 +38,23 @@ export default async function ContentPage() {
                   {item.priority_score ?? 0}
                   <span className="portal-muted text-xs font-normal">/100</span>
                 </p>
-                <div className="justify-self-end">
+                <div className="flex gap-2 justify-self-end">
                   {canDraft && item.stage === "idea" ? (
-                    <form action={draftContentItem}>
-                      <input name="item_id" type="hidden" value={item.id} />
-                      <button className="portal-secondary-button" type="submit">
-                        Draft
-                      </button>
-                    </form>
+                    <>
+                      <form action={draftContentItem}>
+                        <input name="item_id" type="hidden" value={item.id} />
+                        <button className="portal-secondary-button" type="submit">
+                          Draft
+                        </button>
+                      </form>
+                      <form action={setContentStage}>
+                        <input name="item_id" type="hidden" value={item.id} />
+                        <input name="stage" type="hidden" value="parked" />
+                        <button className="portal-secondary-button" type="submit">
+                          Park
+                        </button>
+                      </form>
+                    </>
                   ) : item.stage === "review" ? (
                     <span className="text-xs font-semibold uppercase text-[#3f5a23]">Drafted</span>
                   ) : null}

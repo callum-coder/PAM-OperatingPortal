@@ -7,6 +7,7 @@ import {
   Megaphone,
   Newspaper,
   Radar,
+  Route,
   type LucideIcon,
 } from "lucide-react";
 
@@ -45,6 +46,12 @@ export const modules: ModuleRegistryEntry[] = [
         href: "/gtm/briefs",
         requiredPermission: "gtm.briefs.read",
         icon: BriefcaseBusiness,
+      },
+      {
+        label: "Trial journey",
+        href: "/gtm/journey",
+        requiredPermission: "gtm.briefs.read",
+        icon: Route,
       },
       {
         label: "Leads",

@@ -136,6 +136,11 @@ function RunItem({ run }: { run: AgentRunRow }) {
           <span className="portal-muted text-xs">{formatWhen(run.finished_at ?? run.created_at)}</span>
         </div>
         <p className="mt-1 text-sm">{run.summary ?? run.error ?? "—"}</p>
+        {run.input_tokens !== null || run.output_tokens !== null ? (
+          <p className="portal-muted text-xs">
+            {run.input_tokens ?? 0} in / {run.output_tokens ?? 0} out tokens
+          </p>
+        ) : null}
       </div>
     </div>
   );

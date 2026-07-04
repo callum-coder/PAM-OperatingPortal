@@ -1,9 +1,9 @@
-import { Magnet, Sparkles } from "lucide-react";
+import { Magnet, MailPlus, Sparkles } from "lucide-react";
 
 import { getLeadPlays, type LeadPlayRow } from "@/lib/gtm/subsystem-data";
 import { requirePermission } from "@/lib/rbac/guard";
 import { hasPermission } from "@/lib/rbac/permissions";
-import { generateLeadPlays } from "../actions";
+import { draftOutreachForPlay, generateLeadPlays } from "../actions";
 
 const CHANNELS: { key: string; label: string }[] = [
   { key: "warm_outreach", label: "Warm outreach" },
@@ -16,6 +16,7 @@ export default async function LeadsPage() {
   const user = await requirePermission("gtm.leads.read");
   const plays = await getLeadPlays();
   const canGenerate = hasPermission(user.roles, "gtm.leads.write");
+  const canDraftOutreach = hasPermission(user.roles, "gtm.outreach.write");
 
   const byChannel = new Map<string, LeadPlayRow[]>();
   for (const play of plays) {
@@ -69,7 +70,7 @@ export default async function LeadsPage() {
                 {channelPlays.length ? (
                   <div className="space-y-4">
                     {channelPlays.map((play) => (
-                      <PlayCard key={play.id} play={play} />
+                      <PlayCard canDraftOutreach={canDraftOutreach} key={play.id} play={play} />
                     ))}
                   </div>
                 ) : (
@@ -84,7 +85,7 @@ export default async function LeadsPage() {
   );
 }
 
-function PlayCard({ play }: { play: LeadPlayRow }) {
+function PlayCard({ play, canDraftOutreach }: { play: LeadPlayRow; canDraftOutreach: boolean }) {
   return (
     <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-4">
       <div className="flex items-start justify-between gap-3">
@@ -100,7 +101,18 @@ function PlayCard({ play }: { play: LeadPlayRow }) {
         <Field label="Lead magnet" value={play.lead_magnet} />
         <Field label="First action" value={play.first_action} />
       </dl>
-      <p className="portal-muted mt-3 text-xs uppercase">{play.status}</p>
+      <div className="mt-3 flex items-center justify-between gap-3">
+        <p className="portal-muted text-xs uppercase">{play.status}</p>
+        {canDraftOutreach ? (
+          <form action={draftOutreachForPlay}>
+            <input name="play_id" type="hidden" value={play.id} />
+            <button className="portal-secondary-button inline-flex items-center gap-2" type="submit">
+              <MailPlus size={14} />
+              Draft outreach
+            </button>
+          </form>
+        ) : null}
+      </div>
     </div>
   );
 }

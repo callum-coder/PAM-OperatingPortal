@@ -1,6 +1,13 @@
 import * as z from "zod/v4";
 
 import type { BriefMetrics, MtdCountdown } from "../briefs";
+import {
+  conversionRate,
+  formatDelta,
+  type MetricDelta,
+  type TargetEvaluation,
+  type TrialFunnelMetrics,
+} from "../journey";
 
 // Pure module: the Brief Analyst's output schema and the transforms that build
 // its prompt and turn its actions into gtm_brief_actions rows. No server-only /
@@ -41,6 +48,9 @@ export type BriefSynthesisContext = {
   mtd: MtdCountdown;
   metrics: BriefMetrics;
   crm?: CrmMetrics | null;
+  funnel?: TrialFunnelMetrics | null;
+  deltas?: MetricDelta[] | null;
+  targets?: TargetEvaluation[] | null;
 };
 
 function metricLine(value: number | null, label: string): string {
@@ -75,6 +85,56 @@ export function buildBriefSynthesisInput(context: BriefSynthesisContext): string
       metricLine(context.crm.leads, "leads"),
       metricLine(context.crm.deals, "deals"),
       metricLine(context.crm.subscriptions, "paying subscriptions"),
+    );
+  }
+
+  const funnel = context.funnel;
+  const hasFunnel = Boolean(
+    funnel &&
+      (funnel.trialsActive !== null ||
+        funnel.trialsStarted7d !== null ||
+        funnel.payingTotal !== null),
+  );
+  if (funnel && hasFunnel) {
+    const rate = conversionRate(funnel.trialsStarted7d, funnel.trialsConverted7d);
+    lines.push(
+      "",
+      "Trial → paid funnel (live from PAM — the primary storyline):",
+      metricLine(funnel.trialsStarted7d, "trials started (7d)"),
+      metricLine(funnel.trialsActive, "trials active"),
+      metricLine(funnel.trialsConverted7d, "trials converted (7d)"),
+      metricLine(funnel.trialsExpired7d, "trials expired without converting (7d)"),
+      metricLine(funnel.payingTotal, "paying customers (total)"),
+      rate === null
+        ? "  - 7d conversion rate: not measurable yet"
+        : `  - 7d conversion rate: ${rate}%`,
+      funnel.avgDaysToConvert === null
+        ? "  - avg days to convert: not available"
+        : `  - avg days to convert: ${funnel.avgDaysToConvert}`,
+    );
+  }
+
+  const movedDeltas = (context.deltas ?? []).filter((row) => row.delta !== null);
+  if (movedDeltas.length) {
+    lines.push(
+      "",
+      "Week-over-week movement (vs the previous brief):",
+      ...movedDeltas.map(
+        (row) => `  - ${row.label}: ${row.current} (${formatDelta(row.delta)})`,
+      ),
+    );
+  }
+
+  if (context.targets?.length) {
+    lines.push(
+      "",
+      "Targets (progress toward goals):",
+      ...context.targets.map((target) => {
+        const current = target.current === null ? "not measured" : target.current;
+        const progress = target.progressPct === null ? "" : ` — ${target.progressPct}%`;
+        const due = target.due_date ? ` by ${target.due_date}` : "";
+        return `  - ${target.label}: ${current} of ${target.target}${due}${progress}`;
+      }),
     );
   }
 

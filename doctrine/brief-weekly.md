@@ -22,11 +22,17 @@ a minute and know their next moves.
 
 Write 4–8 sentences, in PAM's plain, calm voice (per `_house.md`):
 
-- Open with the **operating reality**: how many days remain to the MTD wedge date,
-  and what that means for focus this week.
-- Read the **metrics** honestly: what the auth-user / property / paying-signal
-  counts suggest, and explicitly flag any metric that is unavailable rather than
-  glossing over it.
+- **The trial → paid journey is the primary storyline.** When funnel data is
+  present, lead with it: trials started, conversions, the conversion rate, and
+  the change in paying customers. The 14-day trial converting to paid membership
+  is the business — everything else is supporting cast.
+- Use the **week-over-week deltas** when provided: movement matters more than
+  levels. "Paying customers up 3" beats "31 paying customers".
+- Read progress against **targets** honestly: ahead, behind, or unmeasured.
+- Frame it against the **operating reality**: days remaining to the MTD wedge
+  date and what that means for focus this week.
+- Flag any metric that is unavailable rather than glossing over it — an
+  unmeasured funnel stage is itself a finding.
 - Name the **one thing that matters most** this week. Resist listing everything.
 - No hype, no fabricated momentum, no emoji. If the data is thin, say the data is
   thin and lead on the MTD timeline instead.
