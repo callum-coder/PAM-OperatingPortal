@@ -43,6 +43,39 @@ describe("buildBriefSynthesisInput", () => {
     expect(input).not.toContain("HubSpot CRM funnel");
   });
 
+  it("leads with the trial funnel, deltas, and targets when present", () => {
+    const input = buildBriefSynthesisInput({
+      ...context,
+      funnel: {
+        trialsActive: 12,
+        trialsStarted7d: 6,
+        trialsConverted7d: 2,
+        trialsExpired7d: 1,
+        payingTotal: 31,
+        avgDaysToConvert: 9.5,
+      },
+      deltas: [
+        { key: "payingTotal", label: "Paying customers", previous: 28, current: 31, delta: 3 },
+        { key: "crmContacts", label: "CRM contacts", previous: null, current: null, delta: null },
+      ],
+      targets: [
+        {
+          metric: "payingTotal",
+          label: "Paying customers",
+          target: 50,
+          due_date: "2026-08-07",
+          current: 31,
+          progressPct: 62,
+        },
+      ],
+    });
+    expect(input).toContain("Trial → paid funnel");
+    expect(input).toContain("7d conversion rate: 33.3%");
+    expect(input).toContain("Paying customers: 31 (+3)");
+    expect(input).not.toContain("CRM contacts: null");
+    expect(input).toContain("Paying customers: 31 of 50 by 2026-08-07 — 62%");
+  });
+
   it("includes the CRM funnel when HubSpot metrics are present", () => {
     const input = buildBriefSynthesisInput({
       ...context,

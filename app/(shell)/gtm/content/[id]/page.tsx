@@ -14,6 +14,7 @@ const STAGE_STYLES: Record<string, string> = {
   review: "bg-[#f2ecd5] text-[#6b5d22]",
   scheduled: "bg-[#dbe7f4] text-[#2a4a6b]",
   published: "bg-[#e6f4d8] text-[#3f5a23]",
+  parked: "bg-[#eceee8] text-[#5f6d58]",
 };
 
 export default async function ContentItemPage({
@@ -180,6 +181,12 @@ function StageControls({
 
         {stage === "published" ? (
           <p className="portal-muted">Published. Pipeline complete.</p>
+        ) : null}
+
+        {stage === "parked" ? (
+          <StageButton itemId={itemId} stage="idea" label="Revive as idea" />
+        ) : stage === "idea" ? (
+          <StageButton itemId={itemId} stage="parked" label="Park this idea" />
         ) : null}
       </div>
     </div>

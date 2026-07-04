@@ -53,10 +53,13 @@ export async function createManualInput(
     return { error: error.message };
   }
 
-  await supabase.from("gtm_signals").insert({
+  // gtm_signals has a unique (source, signal_type, product) key for the
+  // system_status upsert; suffix manual signals with the input id so repeated
+  // inputs of the same type never collide.
+  const { error: signalError } = await supabase.from("gtm_signals").insert({
     product: "pam",
     source: "manual",
-    signal_type: inputType,
+    signal_type: `${inputType}_${data.id}`,
     title,
     detail: detail || null,
     severity,
@@ -65,6 +68,10 @@ export async function createManualInput(
     related_table: "gtm_manual_inputs",
     related_id: data.id,
   });
+
+  if (signalError) {
+    return { error: `Input saved, but its signal failed: ${signalError.message}` };
+  }
 
   revalidatePath("/gtm");
   return { ok: true };
@@ -219,7 +226,7 @@ export async function draftContentItem(formData: FormData) {
   revalidatePath("/ai-team");
 }
 
-const CONTENT_STAGES = new Set(["idea", "drafting", "review", "scheduled", "published"]);
+const CONTENT_STAGES = new Set(["idea", "drafting", "review", "scheduled", "published", "parked"]);
 
 // Saves a human-edited draft without changing the stage.
 export async function saveContentDraft(formData: FormData) {
@@ -288,6 +295,66 @@ export async function generateLeadPlays() {
   revalidatePath("/gtm/leads");
   revalidatePath("/gtm");
   revalidatePath("/ai-team");
+}
+
+const TARGET_METRICS = new Map(
+  [
+    ["payingTotal", "Paying customers"],
+    ["trialsStarted7d", "Trials started (7d)"],
+    ["trialsConverted7d", "Trials converted (7d)"],
+    ["trialsActive", "Trials active"],
+    ["crmContacts", "CRM contacts"],
+    ["crmLeads", "CRM leads"],
+  ] as const,
+);
+
+// Sets or updates a revenue/funnel target shown on the Trial journey page and
+// read by the Brief Analyst and GTM Lead standup.
+export async function upsertTarget(formData: FormData) {
+  await requirePermission("gtm.briefs.write");
+
+  const metric = String(formData.get("metric") ?? "");
+  const target = Number(formData.get("target"));
+  const dueDate = String(formData.get("due_date") ?? "").trim();
+  const label = TARGET_METRICS.get(metric as Parameters<typeof TARGET_METRICS.get>[0]);
+
+  if (!label || !Number.isFinite(target) || target <= 0) {
+    return;
+  }
+
+  const supabase = createPortalAdminClient();
+  const { error } = await supabase.from("gtm_targets").upsert(
+    {
+      product: "pam",
+      metric,
+      label,
+      target,
+      due_date: dueDate || null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "metric" },
+  );
+
+  if (error) {
+    throw new Error(`Failed to save target: ${error.message}`);
+  }
+
+  revalidatePath("/gtm/journey");
+}
+
+export async function deleteTarget(formData: FormData) {
+  await requirePermission("gtm.briefs.write");
+
+  const metric = String(formData.get("metric") ?? "");
+  if (!metric) return;
+
+  const supabase = createPortalAdminClient();
+  const { error } = await supabase.from("gtm_targets").delete().eq("metric", metric);
+  if (error) {
+    throw new Error(`Failed to delete target: ${error.message}`);
+  }
+
+  revalidatePath("/gtm/journey");
 }
 
 // Runs the Competitor Scout: fetch each watched page, diff, and record changes.

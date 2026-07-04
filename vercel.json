@@ -1,8 +1,10 @@
 {
   "crons": [
     { "path": "/api/cron/all", "schedule": "0 7 * * *" },
+    { "path": "/api/cron/briefs", "schedule": "30 6 * * 1" },
     { "path": "/api/cron/agents/content", "schedule": "0 6 * * *" },
     { "path": "/api/cron/agents/leads", "schedule": "0 6 * * 1" },
-    { "path": "/api/cron/agents/competitors", "schedule": "0 5 * * *" }
+    { "path": "/api/cron/agents/competitors", "schedule": "0 5 * * *" },
+    { "path": "/api/cron/agents/standup", "schedule": "30 7 * * *" }
   ]
 }

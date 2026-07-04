@@ -7,7 +7,9 @@ import { upsertStatus, type StatusInput } from "@/lib/status";
 import { getHubspotGtmMetrics } from "@/lib/hubspot";
 
 import { buildBriefNarrative, getMtdCountdown, getWeeklyPeriod } from "./briefs";
-import { PamReadonlyConfigError, readPamBriefMetrics } from "./pam-readonly";
+import { computeMetricDeltas, evaluateTargets, flattenBriefMetrics } from "./journey";
+import { getTargets } from "./journey-data";
+import { PamReadonlyConfigError, readPamBriefMetrics, readPamTrialFunnel } from "./pam-readonly";
 import { syncSignalsForStatus } from "./status-jobs";
 import { synthesizeWeeklyBrief } from "./agents/brief-analyst";
 import { AgentConfigError } from "./agents/runner";
@@ -29,7 +31,9 @@ export async function runWeeklyBriefsCron(request: Request) {
 
   try {
     const result = await generateWeeklyBrief();
-    const headline = `Weekly brief generated for ${result.periodStart} to ${result.periodEnd}`;
+    const headline = result.skipped
+      ? `Weekly brief already exists for ${result.periodStart} to ${result.periodEnd}`
+      : `Weekly brief generated for ${result.periodStart} to ${result.periodEnd}`;
 
     const statusPayload: StatusInput = {
       module: "gtm",
@@ -37,7 +41,7 @@ export async function runWeeklyBriefsCron(request: Request) {
       product: "pam",
       status: "ok",
       headline,
-      metrics: result.metrics,
+      metrics: result.metrics ?? {},
       needs_attention: [],
     };
 
@@ -102,10 +106,62 @@ export async function runWeeklyBriefsCron(request: Request) {
 }
 
 async function generateWeeklyBrief() {
+  const { periodStart, periodEnd } = getWeeklyPeriod();
+
+  // One brief per weekly period: if a brief was generated in the last 6 days,
+  // return it instead of synthesising (and duplicating actions) again.
+  const guardClient = createPortalAdminClient();
+  const sixDaysAgo = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString();
+  const { data: recent } = await guardClient
+    .from("gtm_briefs")
+    .select("id,period_start,period_end")
+    .eq("product", "pam")
+    .gte("created_at", sixDaysAgo)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  if (recent?.length) {
+    return {
+      briefId: recent[0].id as string,
+      periodStart: (recent[0].period_start as string) ?? periodStart,
+      periodEnd: (recent[0].period_end as string) ?? periodEnd,
+      metrics: null,
+      skipped: true as const,
+    };
+  }
+
   const metrics = await readPamBriefMetrics();
   const crm = await getHubspotGtmMetrics();
-  const { periodStart, periodEnd } = getWeeklyPeriod();
+  const funnel = await readPamTrialFunnel();
+  const targetRows = await getTargets();
   const mtdCountdown = getMtdCountdown();
+
+  // Week-over-week deltas against the previous brief's stored metrics.
+  const { data: prevRows } = await guardClient
+    .from("gtm_briefs")
+    .select("raw_metrics")
+    .eq("product", "pam")
+    .order("created_at", { ascending: false })
+    .limit(1);
+  const previousRaw = (prevRows?.[0]?.raw_metrics ?? null) as Record<string, unknown> | null;
+
+  const currentFlat = flattenBriefMetrics({
+    authUsers: metrics.authUsers,
+    propertyRecords: metrics.propertyRecords,
+    payingSignals: metrics.payingSignals,
+    crm,
+    funnel: funnel ?? {},
+  });
+  const deltas = computeMetricDeltas(previousRaw, currentFlat);
+  const targets = evaluateTargets(
+    targetRows.map((row) => ({
+      metric: row.metric,
+      label: row.label,
+      target: row.target,
+      due_date: row.due_date,
+    })),
+    currentFlat,
+  );
 
   const startedAt = new Date().toISOString();
   let narrative: string;
@@ -123,6 +179,9 @@ async function generateWeeklyBrief() {
       mtd: mtdCountdown,
       metrics,
       crm,
+      funnel,
+      deltas,
+      targets,
     });
     narrative = synthesis.narrative;
     actions = synthesis.actions;
@@ -156,6 +215,9 @@ async function generateWeeklyBrief() {
         ...metrics,
         mtdCountdown,
         crm,
+        funnel,
+        deltas,
+        targets,
         synthesis: { source, model },
       },
       narrative,
@@ -201,5 +263,6 @@ async function generateWeeklyBrief() {
     periodStart,
     periodEnd,
     metrics,
+    skipped: false as const,
   };
 }

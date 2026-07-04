@@ -21,6 +21,7 @@ import {
 
 const AGENT_ID = "content-strategist" as const;
 const SUBSYSTEM = "content_agent";
+const MAX_OPEN_IDEAS = 15;
 const RUNTIME_INSTRUCTION =
   "You are running as a scheduled daily agent. Reason carefully using the doctrine above, then return only the structured ideas via the required output format. Do not include any commentary outside the structured output.";
 
@@ -72,6 +73,39 @@ export async function executeContentStrategist(): Promise<ContentAgentExecution>
 
   try {
     const snapshot = await senseContentContext();
+
+    // Backlog throttle: with one human reviewer, an unbounded daily stream of
+    // ideas floods the queue. Pause generation until the open backlog is triaged.
+    const openIdeas = snapshot.contentByStage["idea"] ?? 0;
+    if (openIdeas >= MAX_OPEN_IDEAS) {
+      const headline = `Idea backlog full (${openIdeas} open) — generation paused until the queue is triaged`;
+      await upsertStatus({
+        module: "gtm",
+        subsystem: SUBSYSTEM,
+        product: "pam",
+        status: "ok",
+        headline,
+        metrics: { agent: agent.id, openIdeas, throttle: MAX_OPEN_IDEAS },
+        needs_attention: [
+          { severity: "low", message: `Triage the content queue (${openIdeas} open ideas) to resume generation.` },
+        ],
+      });
+      await logAgentRun({
+        agent_id: agent.id,
+        status: "skipped",
+        model: agent.model,
+        summary: headline,
+        output: { openIdeas },
+        items_created: 0,
+        input_tokens: null,
+        output_tokens: null,
+        error: null,
+        started_at: startedAt,
+        finished_at: new Date().toISOString(),
+      });
+      return { ok: true, status: "skipped", ideas: 0, itemsCreated: 0, message: headline };
+    }
+
     const systemPrompt = `${composeDoctrine(agent.doctrine)}\n\n---\n\n${RUNTIME_INSTRUCTION}`;
 
     const result = await invokeStructuredAgent({

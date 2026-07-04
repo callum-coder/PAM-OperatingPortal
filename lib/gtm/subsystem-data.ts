@@ -72,6 +72,7 @@ export async function getContentItems(): Promise<ContentItemRow[]> {
   const { data, error } = await supabase
     .from("gtm_content_items")
     .select("id,title,target_keyword,stage,priority_score,updated_at")
+    .neq("stage", "parked")
     .order("priority_score", { ascending: false })
     .order("updated_at", { ascending: false })
     .limit(25);
