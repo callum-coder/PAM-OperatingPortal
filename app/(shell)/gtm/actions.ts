@@ -11,6 +11,7 @@ import { buildSignalStatusUpdate, type SignalWorkflowStatus } from "@/lib/gtm/si
 import { executeContentWriter } from "@/lib/gtm/agents/content-writer";
 import { executeLeadFinder } from "@/lib/gtm/agents/lead-finder";
 import { executeCompetitorScout } from "@/lib/gtm/agents/competitor-scout";
+import { executeOutreachOperator } from "@/lib/gtm/agents/outreach-operator";
 import { requirePermission } from "@/lib/rbac/guard";
 import { createPortalAdminClient } from "@/lib/supabase";
 
@@ -355,6 +356,42 @@ export async function deleteTarget(formData: FormData) {
   }
 
   revalidatePath("/gtm/journey");
+}
+
+// Hands a lead play to the Outreach Operator, which drafts copy (draft-only —
+// nothing sends) into gtm_outreach_drafts.
+export async function draftOutreachForPlay(formData: FormData) {
+  await requirePermission("gtm.outreach.write");
+
+  const playId = String(formData.get("play_id") ?? "");
+  if (!playId) return;
+
+  await executeOutreachOperator(playId);
+  revalidatePath("/gtm/outreach");
+  revalidatePath("/gtm/leads");
+  revalidatePath("/ai-team");
+}
+
+const OUTREACH_DRAFT_STATUSES = new Set(["draft", "approved", "archived"]);
+
+export async function setOutreachDraftStatus(formData: FormData) {
+  await requirePermission("gtm.outreach.write");
+
+  const draftId = String(formData.get("draft_id") ?? "");
+  const status = String(formData.get("status") ?? "");
+  if (!draftId || !OUTREACH_DRAFT_STATUSES.has(status)) return;
+
+  const supabase = createPortalAdminClient();
+  const { error } = await supabase
+    .from("gtm_outreach_drafts")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", draftId);
+
+  if (error) {
+    throw new Error(`Failed to update outreach draft: ${error.message}`);
+  }
+
+  revalidatePath("/gtm/outreach");
 }
 
 // Runs the Competitor Scout: fetch each watched page, diff, and record changes.

@@ -159,6 +159,11 @@ function AgentCard({
               <span className="portal-muted">{formatWhen(latestRun.finished_at ?? latestRun.created_at)}</span>
             </div>
             <p className="text-sm">{latestRun.summary ?? latestRun.error ?? "—"}</p>
+            {latestRun.input_tokens !== null || latestRun.output_tokens !== null ? (
+              <p className="portal-muted text-xs">
+                {latestRun.input_tokens ?? 0} in / {latestRun.output_tokens ?? 0} out tokens
+              </p>
+            ) : null}
           </div>
         ) : (
           <p className="portal-muted">No runs recorded yet.</p>

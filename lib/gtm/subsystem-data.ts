@@ -142,6 +142,35 @@ export async function getLeadPlays(): Promise<LeadPlayRow[]> {
   return (data ?? []) as LeadPlayRow[];
 }
 
+export type OutreachDraftRow = {
+  id: string;
+  play_id: string | null;
+  play_title: string | null;
+  channel: string;
+  variant: string | null;
+  subject: string | null;
+  body: string;
+  personalisation: string[] | null;
+  status: string;
+  created_at: string;
+};
+
+export async function getOutreachDrafts(): Promise<OutreachDraftRow[]> {
+  if (!hasPortalSupabaseConfig()) return [];
+
+  const supabase = createPortalAdminClient();
+  const { data, error } = await supabase
+    .from("gtm_outreach_drafts")
+    .select("id,play_id,play_title,channel,variant,subject,body,personalisation,status,created_at")
+    .neq("status", "archived")
+    .order("created_at", { ascending: false })
+    .limit(30);
+
+  // Table may not be applied yet — degrade to no drafts.
+  if (error) return [];
+  return (data ?? []) as OutreachDraftRow[];
+}
+
 export async function getExperiments(): Promise<ExperimentRow[]> {
   if (!hasPortalSupabaseConfig()) return [];
 

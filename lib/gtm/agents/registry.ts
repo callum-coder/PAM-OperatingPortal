@@ -10,14 +10,14 @@ export const agents: AgentDefinition[] = [
     role: "Coordinator",
     reportsTo: null,
     description:
-      "Orchestrates the GTM agent fleet, rolls up their runs, and surfaces the daily worklist.",
+      "Posts the daily standup: what the fleet did in the last 24 hours, the signal inbox, the trial→paid funnel, and progress against targets. Deterministic roll-up — no LLM.",
     module: "gtm",
     model: null,
     doctrine: [],
-    schedule: null,
-    outputs: ["system_status"],
+    schedule: "30 7 * * *",
+    outputs: ["gtm_agent_messages", "gtm_agent_runs"],
     tools: "none",
-    status: "planned",
+    status: "active",
   },
   {
     id: "content-strategist",
@@ -100,14 +100,14 @@ export const agents: AgentDefinition[] = [
     role: "Outbound",
     reportsTo: "gtm-lead",
     description:
-      "Drafts personalised outreach behind the readiness gate. Draft-only to start; auto-send is a gated graduation.",
+      "Drafts outreach copy for a chosen lead play — two variants with explicit personalisation slots. Draft-only: a human reviews, personalises, and sends; auto-send stays a gated graduation.",
     module: "gtm",
     model: null,
-    doctrine: [],
+    doctrine: ["outreach-drafting.md"],
     schedule: null,
-    outputs: ["gtm_sequence_enrollments", "gtm_signals"],
-    tools: "read-only",
-    status: "planned",
+    outputs: ["gtm_outreach_drafts", "gtm_agent_runs"],
+    tools: "none",
+    status: "active",
   },
 ];
 
