@@ -14,8 +14,14 @@ import {
 
 import type { PermissionId } from "@/lib/rbac/permissions";
 
+// The sidebar is organised around the customer lifecycle, not the org chart:
+// Command (hardcoded in the shell) → Acquire → Convert → Retain → Revenue.
+// Each entry is a lifecycle section, not a team. Routes are unchanged — this is
+// purely how the existing pages are grouped and labelled. "Retain" is omitted
+// until the retention module (dunning + churn) exists; it slots between Convert
+// and Revenue when its pages land.
 export type ModuleRegistryEntry = {
-  id: "gtm" | "finance" | "engineering" | "support" | "team";
+  id: "acquire" | "convert" | "retain" | "revenue";
   label: string;
   href: string;
   requiredPermission: PermissionId;
@@ -30,29 +36,17 @@ export type ModuleRegistryEntry = {
 
 export const modules: ModuleRegistryEntry[] = [
   {
-    id: "gtm",
-    label: "GTM",
+    id: "acquire",
+    label: "Acquire",
     href: "/gtm",
     requiredPermission: "gtm.briefs.read",
     icon: Megaphone,
     nav: [
       {
-        label: "Overview",
+        label: "Pipeline",
         href: "/gtm",
         requiredPermission: "gtm.briefs.read",
         icon: LayoutDashboard,
-      },
-      {
-        label: "Briefs",
-        href: "/gtm/briefs",
-        requiredPermission: "gtm.briefs.read",
-        icon: BriefcaseBusiness,
-      },
-      {
-        label: "Trial journey",
-        href: "/gtm/journey",
-        requiredPermission: "gtm.briefs.read",
-        icon: Route,
       },
       {
         label: "Leads",
@@ -87,8 +81,29 @@ export const modules: ModuleRegistryEntry[] = [
     ],
   },
   {
-    id: "finance",
-    label: "Finance",
+    id: "convert",
+    label: "Convert",
+    href: "/gtm/journey",
+    requiredPermission: "gtm.briefs.read",
+    icon: Route,
+    nav: [
+      {
+        label: "Trial journey",
+        href: "/gtm/journey",
+        requiredPermission: "gtm.briefs.read",
+        icon: Route,
+      },
+      {
+        label: "Briefs",
+        href: "/gtm/briefs",
+        requiredPermission: "gtm.briefs.read",
+        icon: BriefcaseBusiness,
+      },
+    ],
+  },
+  {
+    id: "revenue",
+    label: "Revenue",
     href: "/finance",
     requiredPermission: "finance.overview.read",
     icon: Coins,
