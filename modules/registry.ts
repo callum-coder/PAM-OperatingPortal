@@ -1,8 +1,6 @@
 import {
   BarChart3,
   BriefcaseBusiness,
-  Coins,
-  FlaskConical,
   HeartPulse,
   LayoutDashboard,
   Magnet,
@@ -84,27 +82,6 @@ export const modules: ModuleRegistryEntry[] = [
         href: "/gtm/content",
         requiredPermission: "gtm.content.read",
         icon: Newspaper,
-      },
-      {
-        label: "Experiments",
-        href: "/gtm/experiments",
-        requiredPermission: "gtm.experiments.read",
-        icon: FlaskConical,
-      },
-    ],
-  },
-  {
-    id: "finance",
-    label: "Finance",
-    href: "/finance",
-    requiredPermission: "finance.overview.read",
-    icon: Coins,
-    nav: [
-      {
-        label: "Overview",
-        href: "/finance",
-        requiredPermission: "finance.overview.read",
-        icon: LayoutDashboard,
       },
     ],
   },

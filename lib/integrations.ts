@@ -4,7 +4,7 @@ import { createPortalAdminClient, hasPortalSupabaseConfig } from "@/lib/supabase
 import { anthropicConfig } from "./anthropic";
 import { hasHubspotConfig } from "./hubspot";
 import { classifyPamReadonlyConfig } from "./gtm/pam-readonly-config";
-import { hasXeroConfig } from "./xero";
+import { hasStripeConfig } from "./stripe";
 
 export type IntegrationStatus = "connected" | "degraded" | "missing" | "planned";
 
@@ -23,7 +23,7 @@ export type IntegrationHealthRow = {
 
 const runtimeChecks: Record<string, () => IntegrationStatus> = {
   hubspot: () => (hasHubspotConfig() ? "connected" : "missing"),
-  xero: () => (hasXeroConfig() ? "connected" : "missing"),
+  stripe: () => (hasStripeConfig() ? "connected" : "missing"),
   anthropic: () => (anthropicConfig.apiKey ? "connected" : "missing"),
   slack: () =>
     process.env.SLACK_BOT_TOKEN && process.env.SLACK_CHANNEL_ID ? "connected" : "missing",
@@ -45,9 +45,7 @@ export async function getIntegrationHealth(): Promise<IntegrationHealthRow[]> {
     .order("category", { ascending: true })
     .order("name", { ascending: true });
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (error) return defaultIntegrations();
 
   return ((data ?? []) as IntegrationHealthRow[]).map((integration) => ({
     ...integration,
@@ -106,16 +104,16 @@ function defaultIntegrations(): IntegrationHealthRow[] {
       notes: "Daily standups and agent notifications.",
     },
     {
-      key: "xero",
+      key: "stripe",
       product: "pam",
-      name: "Xero",
-      category: "Finance",
-      status: runtimeChecks.xero(),
-      env_keys: ["XERO_CLIENT_ID", "XERO_CLIENT_SECRET"],
+      name: "Stripe",
+      category: "Growth",
+      status: runtimeChecks.stripe(),
+      env_keys: ["STRIPE_SECRET_KEY"],
       last_checked_at: null,
       last_success_at: null,
       last_error: null,
-      notes: "Read-only management accounts and P&L reporting.",
+      notes: "Subscriptions, active customers, and recurring revenue.",
     },
   ];
 }

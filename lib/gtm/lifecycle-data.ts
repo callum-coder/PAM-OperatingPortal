@@ -72,12 +72,12 @@ export async function getCustomerLifecycleSnapshot(
       .limit(25),
   ]);
 
-  if (customersResult.error) {
-    throw new Error(customersResult.error.message);
-  }
-
-  if (eventsResult.error) {
-    throw new Error(eventsResult.error.message);
+  if (customersResult.error || eventsResult.error) {
+    return {
+      customers: [],
+      events: [],
+      summary: summarizeLifecycle([]),
+    };
   }
 
   const customers = (customersResult.data ?? []) as CustomerProfileRow[];

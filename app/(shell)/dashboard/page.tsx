@@ -13,6 +13,7 @@ import { getHubspotGtmMetrics } from "@/lib/hubspot";
 import { DEFAULT_PRODUCT } from "@/lib/products";
 import { getReadableModules, hasPermission } from "@/lib/rbac/permissions";
 import { requireUser } from "@/lib/rbac/guard";
+import { formatStripeMoney, getStripeGrowthMetrics, hasStripeConfig } from "@/lib/stripe";
 
 const statusTone = {
   ok: "text-[#58bd72]",
@@ -26,12 +27,13 @@ export default async function DashboardPage() {
   const readableModules = getReadableModules(user.roles);
   const canSeeRevenue = hasPermission(user.roles, "gtm.briefs.read");
 
-  const [statuses, funnel, crm, targetRows] = await Promise.all([
+  const [statuses, funnel, crm, stripe, targetRows] = await Promise.all([
     getSystemStatus(readableModules),
     canSeeRevenue ? readPamTrialFunnel() : Promise.resolve(null),
     canSeeRevenue
       ? getHubspotGtmMetrics()
       : Promise.resolve({ source: "hubspot" as const, contacts: null, leads: null, deals: null, subscriptions: null }),
+    canSeeRevenue ? getStripeGrowthMetrics() : Promise.resolve({ source: "stripe" as const, activeSubscriptions: null, customers: null, mrr: null, currency: null }),
     canSeeRevenue ? getTargets() : Promise.resolve([]),
   ]);
 
@@ -96,29 +98,34 @@ export default async function DashboardPage() {
           </div>
           <div className="portal-soft-shell">
             <div className="portal-os-frame overflow-hidden">
-              <div className="border-b border-[#dceaf8] px-5 py-4">
-                <p className="text-sm font-medium text-[#202226]">What is changing in the revenue engine?</p>
+              <div className="flex items-center justify-between gap-3 border-b border-[#dceaf8] px-5 py-4">
+                <p className="text-sm font-medium text-[#202226]">Live growth sources</p>
+                <span className="portal-muted text-xs">
+                  HubSpot / Stripe / PAM
+                </span>
               </div>
               <div className="grid gap-4 p-5 lg:grid-cols-[1.1fr_0.9fr]">
                 <div className="portal-chart-card">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="portal-muted text-sm">Trial conversations</p>
+                      <p className="portal-muted text-sm">Stripe MRR</p>
                       <p className="mt-2 text-4xl font-medium text-[#202226]">
-                        {(funnel?.trialsStarted7d ?? 88412).toLocaleString("en-GB")}
+                        {formatStripeMoney(stripe.mrr, stripe.currency)}
                       </p>
                     </div>
-                    <span className="text-sm font-medium text-[#58bd72]">+13.8%</span>
+                    <span className={hasStripeConfig() ? "text-sm font-medium text-[#58bd72]" : "text-sm font-medium text-[#c55252]"}>
+                      {hasStripeConfig() ? "connected" : "not connected"}
+                    </span>
                   </div>
                   <div className="portal-line-chart mt-4" aria-hidden="true" />
                 </div>
                 <div className="portal-chart-card">
-                  <p className="portal-muted text-sm">Top lifecycle topics</p>
+                  <p className="portal-muted text-sm">Growth truth table</p>
                   <div className="mt-4 space-y-3">
-                    <TopicRow label="Trial starts" value={funnel?.trialsStarted7d ?? null} delta="+19%" />
-                    <TopicRow label="Activation" value={funnel?.trialsActive ?? null} delta="+11%" />
-                    <TopicRow label="Conversion" value={funnel?.trialsConverted7d ?? null} delta="+22%" />
-                    <TopicRow label="Paying" value={funnel?.payingTotal ?? null} delta="+12%" />
+                    <TopicRow label="HubSpot contacts" value={crm.contacts} source="HubSpot" />
+                    <TopicRow label="HubSpot leads" value={crm.leads} source="HubSpot" />
+                    <TopicRow label="Stripe active subs" value={stripe.activeSubscriptions} source="Stripe" />
+                    <TopicRow label="PAM trials active" value={funnel?.trialsActive ?? null} source="PAM" />
                   </div>
                 </div>
               </div>
@@ -187,7 +194,7 @@ export default async function DashboardPage() {
               One shared table, filtered by the permissions attached to your roles.
             </p>
           </div>
-          <Clock3 className="text-[#71806a]" size={20} />
+          <Clock3 className="text-[#4b7fd8]" size={20} />
         </div>
 
         {statuses.length ? (
@@ -255,24 +262,24 @@ function MetricCard({ label, value }: { label: string; value: number }) {
 function TopicRow({
   label,
   value,
-  delta,
+  source,
 }: {
   label: string;
   value: number | null;
-  delta: string;
+  source: string;
 }) {
   return (
     <div className="grid grid-cols-[1fr_auto_auto] items-center gap-3 text-sm">
       <span className="text-[#6d7178]">{label}</span>
       <span className="font-medium text-[#202226]">{value === null ? "—" : value.toLocaleString("en-GB")}</span>
-      <span className="font-medium text-[#58bd72]">{delta}</span>
+      <span className="font-medium text-[#7b8491]">{source}</span>
     </div>
   );
 }
 
 function EmptyState({ title, body }: { title: string; body: string }) {
   return (
-    <div className="border border-dashed border-[#c6d0bc] bg-[#f8faf4] p-6">
+    <div className="rounded-2xl border border-dashed border-[#dceaf8] bg-[#f8fbff] p-6">
       <p className="font-medium">{title}</p>
       <p className="portal-muted mt-1">{body}</p>
     </div>

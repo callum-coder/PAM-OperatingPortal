@@ -28,9 +28,7 @@ export async function getAiWorkItems(): Promise<AiWorkItemRow[]> {
     .order("created_at", { ascending: false })
     .limit(50);
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (error) return [];
 
   return (data ?? []) as AiWorkItemRow[];
 }

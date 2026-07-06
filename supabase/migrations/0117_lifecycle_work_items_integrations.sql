@@ -113,7 +113,7 @@ create table if not exists portal_integrations (
 insert into portal_integrations (key, name, category, status, env_keys, notes)
 values
   ('hubspot', 'HubSpot', 'CRM', 'missing', array['HUBSPOT_ACCESS_TOKEN'], 'Pipeline, contacts, lead capture, and subscriptions.'),
-  ('xero', 'Xero', 'Finance', 'missing', array['XERO_CLIENT_ID', 'XERO_CLIENT_SECRET'], 'Read-only management accounts and P&L reporting.'),
+  ('stripe', 'Stripe', 'Growth', 'missing', array['STRIPE_SECRET_KEY'], 'Subscriptions, active customers, and recurring revenue.'),
   ('anthropic', 'Anthropic', 'AI', 'missing', array['ANTHROPIC_API_KEY'], 'Structured agent synthesis and drafting.'),
   ('slack', 'Slack', 'Team', 'missing', array['SLACK_BOT_TOKEN', 'SLACK_CHANNEL_ID'], 'Daily standups and agent notifications.'),
   ('pam-readonly', 'PAM readonly database', 'Product data', 'missing', array['PAM_DATABASE_URL_READONLY'], 'Trial, activation, customer, and funnel aggregates.')
@@ -123,6 +123,8 @@ on conflict (key) do update set
   env_keys = excluded.env_keys,
   notes = excluded.notes,
   updated_at = now();
+
+delete from portal_integrations where key = 'xero';
 
 alter table portal_products enable row level security;
 alter table gtm_customer_profiles enable row level security;
