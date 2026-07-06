@@ -29,7 +29,16 @@ table discovery while that view is absent.
 - Shell-level RBAC lives in `lib/rbac`.
 - Modules register in `modules/registry.ts`.
 - Shared job health lives in `system_status`, written through `lib/status.ts`.
-- GTM is the first module; Finance, Engineering, Support, and Team are not built yet.
+- GTM is the first module; Finance has an initial Xero overview; Engineering,
+  Support, and Team are not built yet.
+- Customer lifecycle foundations live in `gtm_customer_profiles` and
+  `gtm_lifecycle_events`, surfaced at `/gtm/customers`.
+- AI recommendations that need human approval live in `gtm_ai_work_items`,
+  surfaced at `/ai-team/work-items`.
+- Integration health is tracked through `portal_integrations`, surfaced at
+  `/integrations`.
+- `portal_products` keeps PAM as the first product while preserving a path to
+  multi-product operating loops.
 
 ## Verification
 

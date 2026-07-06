@@ -29,8 +29,11 @@ export default async function LeadsPage() {
     <div className="space-y-6">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">gtm.leads.read</p>
+          <p className="portal-kicker">Demand generation</p>
           <h1 className="portal-title">Lead engine</h1>
+          <p className="portal-muted mt-4 max-w-2xl text-lg">
+            Prioritised acquisition plays. Keep this lean: channel, audience, hook, next action.
+          </p>
         </div>
         {canGenerate ? (
           <form action={generateLeadPlays}>
@@ -42,23 +45,17 @@ export default async function LeadsPage() {
         ) : null}
       </section>
 
-      <p className="portal-muted max-w-prose">
-        Core Four lead-gen plays for PAM landlords, with the MTD deadline as the hook. These are
-        demand-gen strategies, not contact records — real sourced leads land here once a lead data
-        source is connected.
-      </p>
-
       {plays.length === 0 ? (
         <div className="portal-panel">
           <div className="flex items-center gap-3">
-            <Magnet className="text-[#71806a]" size={20} />
+            <Magnet className="text-[#4b7fd8]" size={20} />
             <p className="portal-muted">
               No lead plays yet. {canGenerate ? "Generate plays to design the engine." : "The Lead Finder runs weekly."}
             </p>
           </div>
         </div>
       ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-4 xl:grid-cols-4">
           {CHANNELS.map((channel) => {
             const channelPlays = byChannel.get(channel.key) ?? [];
             return (
@@ -87,10 +84,10 @@ export default async function LeadsPage() {
 
 function PlayCard({ play, canDraftOutreach }: { play: LeadPlayRow; canDraftOutreach: boolean }) {
   return (
-    <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-4">
+    <div className="rounded-2xl border border-[#dceaf8] bg-white p-4">
       <div className="flex items-start justify-between gap-3">
         <p className="font-medium">{play.title}</p>
-        <span className="shrink-0 font-semibold">
+        <span className="shrink-0 text-xl font-medium text-[#202226]">
           {play.priority_score ?? 0}
           <span className="portal-muted text-xs font-normal">/100</span>
         </span>
@@ -98,7 +95,6 @@ function PlayCard({ play, canDraftOutreach }: { play: LeadPlayRow; canDraftOutre
       <dl className="mt-3 space-y-2 text-sm">
         <Field label="Audience" value={play.audience} />
         <Field label="Hook" value={play.hook} />
-        <Field label="Lead magnet" value={play.lead_magnet} />
         <Field label="First action" value={play.first_action} />
       </dl>
       <div className="mt-3 flex items-center justify-between gap-3">
@@ -121,7 +117,7 @@ function Field({ label, value }: { label: string; value: string | null }) {
   if (!value) return null;
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase text-[#64715d]">{label}</dt>
+      <dt className="text-xs font-semibold uppercase text-[#7b8491]">{label}</dt>
       <dd className="mt-0.5">{value}</dd>
     </div>
   );

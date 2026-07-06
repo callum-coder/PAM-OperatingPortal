@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle2, Clock3, Route } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Clock3, Route, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 import { getSystemStatus } from "@/lib/dashboard-data";
@@ -10,14 +10,16 @@ import {
 import { getTargets } from "@/lib/gtm/journey-data";
 import { readPamTrialFunnel } from "@/lib/gtm/pam-readonly";
 import { getHubspotGtmMetrics } from "@/lib/hubspot";
+import { DEFAULT_PRODUCT } from "@/lib/products";
 import { getReadableModules, hasPermission } from "@/lib/rbac/permissions";
 import { requireUser } from "@/lib/rbac/guard";
+import { formatStripeMoney, getStripeGrowthMetrics, hasStripeConfig } from "@/lib/stripe";
 
 const statusTone = {
-  ok: "text-[#28734d]",
-  warning: "text-[#9f6a00]",
-  error: "text-[#b42318]",
-  idle: "text-[#697567]",
+  ok: "text-[#58bd72]",
+  warning: "text-[#b8892f]",
+  error: "text-[#c55252]",
+  idle: "text-[#7b8491]",
 };
 
 export default async function DashboardPage() {
@@ -25,12 +27,13 @@ export default async function DashboardPage() {
   const readableModules = getReadableModules(user.roles);
   const canSeeRevenue = hasPermission(user.roles, "gtm.briefs.read");
 
-  const [statuses, funnel, crm, targetRows] = await Promise.all([
+  const [statuses, funnel, crm, stripe, targetRows] = await Promise.all([
     getSystemStatus(readableModules),
     canSeeRevenue ? readPamTrialFunnel() : Promise.resolve(null),
     canSeeRevenue
       ? getHubspotGtmMetrics()
       : Promise.resolve({ source: "hubspot" as const, contacts: null, leads: null, deals: null, subscriptions: null }),
+    canSeeRevenue ? getStripeGrowthMetrics() : Promise.resolve({ source: "stripe" as const, activeSubscriptions: null, customers: null, mrr: null, currency: null }),
     canSeeRevenue ? getTargets() : Promise.resolve([]),
   ]);
 
@@ -54,8 +57,11 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">Cross-module status spine</p>
+          <p className="portal-kicker">PAM Agent OS</p>
           <h1 className="portal-title">Operating dashboard</h1>
+          <p className="portal-muted mt-4 max-w-2xl text-lg">
+            Build, monitor, and improve the GTM engine from one calm operating surface.
+          </p>
         </div>
         <div className="portal-deadline">
           <span>MTD wedge date</span>
@@ -67,6 +73,65 @@ export default async function DashboardPage() {
         <MetricCard label="Visible modules" value={readableModules.length} />
         <MetricCard label="Subsystems reporting" value={statuses.length} />
         <MetricCard label="Needs attention" value={attention.length} />
+      </section>
+
+      <section className="portal-hero-card">
+        <div className="grid gap-8 p-5 lg:grid-cols-[0.9fr_1.1fr] lg:p-8">
+          <div className="flex flex-col justify-between gap-8">
+            <div>
+              <span className="portal-status-pill">
+                <Sparkles size={16} />
+                Primary product
+              </span>
+              <h2 className="mt-5 text-4xl font-medium tracking-normal text-[#202226]">
+                {DEFAULT_PRODUCT.name}
+              </h2>
+              <p className="portal-muted mt-3 text-base">
+                {DEFAULT_PRODUCT.audience} · {DEFAULT_PRODUCT.lifecycleModel} lifecycle. Future
+                products can share the same status, journey, agent, and integration contracts.
+              </p>
+            </div>
+            <Link className="portal-secondary-button w-fit" href="/gtm/customers">
+              <Route size={16} />
+              Customer 360
+            </Link>
+          </div>
+          <div className="portal-soft-shell">
+            <div className="portal-os-frame overflow-hidden">
+              <div className="flex items-center justify-between gap-3 border-b border-[#dceaf8] px-5 py-4">
+                <p className="text-sm font-medium text-[#202226]">Live growth sources</p>
+                <span className="portal-muted text-xs">
+                  HubSpot / Stripe / PAM
+                </span>
+              </div>
+              <div className="grid gap-4 p-5 lg:grid-cols-[1.1fr_0.9fr]">
+                <div className="portal-chart-card">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="portal-muted text-sm">Stripe MRR</p>
+                      <p className="mt-2 text-4xl font-medium text-[#202226]">
+                        {formatStripeMoney(stripe.mrr, stripe.currency)}
+                      </p>
+                    </div>
+                    <span className={hasStripeConfig() ? "text-sm font-medium text-[#58bd72]" : "text-sm font-medium text-[#c55252]"}>
+                      {hasStripeConfig() ? "connected" : "not connected"}
+                    </span>
+                  </div>
+                  <div className="portal-line-chart mt-4" aria-hidden="true" />
+                </div>
+                <div className="portal-chart-card">
+                  <p className="portal-muted text-sm">Growth truth table</p>
+                  <div className="mt-4 space-y-3">
+                    <TopicRow label="HubSpot contacts" value={crm.contacts} source="HubSpot" />
+                    <TopicRow label="HubSpot leads" value={crm.leads} source="HubSpot" />
+                    <TopicRow label="Stripe active subs" value={stripe.activeSubscriptions} source="Stripe" />
+                    <TopicRow label="PAM trials active" value={funnel?.trialsActive ?? null} source="PAM" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {canSeeRevenue ? (
@@ -108,9 +173,9 @@ export default async function DashboardPage() {
                       {target.progressPct !== null ? ` · ${target.progressPct}%` : ""}
                     </span>
                   </div>
-                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-[#e7ebe1]">
+                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-[#edf5ff]">
                     <div
-                      className="h-full rounded-full bg-[#d9ff73]"
+                      className="h-full rounded-full bg-[#58bd72]"
                       style={{ width: `${Math.min(100, target.progressPct ?? 0)}%` }}
                     />
                   </div>
@@ -129,11 +194,11 @@ export default async function DashboardPage() {
               One shared table, filtered by the permissions attached to your roles.
             </p>
           </div>
-          <Clock3 className="text-[#71806a]" size={20} />
+          <Clock3 className="text-[#4b7fd8]" size={20} />
         </div>
 
         {statuses.length ? (
-          <div className="divide-y divide-[#dfe5d8]">
+          <div className="divide-y divide-[#dceaf8]">
             {statuses.map((row) => (
               <div className="grid gap-3 py-4 md:grid-cols-[1fr_140px_180px]" key={row.id}>
                 <div>
@@ -176,9 +241,9 @@ function RevenueTile({
   suffix?: string;
 }) {
   return (
-    <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-4">
+    <div className="portal-metric-tile">
       <p className="portal-muted text-sm">{label}</p>
-      <p className="mt-2 text-3xl font-semibold">
+      <p className="mt-2 text-3xl font-medium text-[#202226]">
         {value === null ? "—" : `${value.toLocaleString("en-GB")}${suffix ?? ""}`}
       </p>
     </div>
@@ -187,16 +252,34 @@ function RevenueTile({
 
 function MetricCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="portal-panel">
+    <div className="portal-metric-tile">
       <p className="portal-muted">{label}</p>
-      <p className="mt-3 text-4xl font-semibold">{value}</p>
+      <p className="mt-3 text-4xl font-medium text-[#202226]">{value}</p>
+    </div>
+  );
+}
+
+function TopicRow({
+  label,
+  value,
+  source,
+}: {
+  label: string;
+  value: number | null;
+  source: string;
+}) {
+  return (
+    <div className="grid grid-cols-[1fr_auto_auto] items-center gap-3 text-sm">
+      <span className="text-[#6d7178]">{label}</span>
+      <span className="font-medium text-[#202226]">{value === null ? "—" : value.toLocaleString("en-GB")}</span>
+      <span className="font-medium text-[#7b8491]">{source}</span>
     </div>
   );
 }
 
 function EmptyState({ title, body }: { title: string; body: string }) {
   return (
-    <div className="border border-dashed border-[#c6d0bc] bg-[#f8faf4] p-6">
+    <div className="rounded-2xl border border-dashed border-[#dceaf8] bg-[#f8fbff] p-6">
       <p className="font-medium">{title}</p>
       <p className="portal-muted mt-1">{body}</p>
     </div>

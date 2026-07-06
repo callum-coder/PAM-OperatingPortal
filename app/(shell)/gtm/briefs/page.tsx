@@ -2,10 +2,10 @@ import { getBriefActionsByBrief, getLatestGtmBriefs } from "@/lib/gtm/briefs-dat
 import { requirePermission } from "@/lib/rbac/guard";
 
 const ACTION_STYLES: Record<string, string> = {
-  recommended: "bg-[#e6f4d8] text-[#3f5a23]",
-  warning: "bg-[#f7dada] text-[#7a2a2a]",
-  observation: "bg-[#eceee8] text-[#5f6d58]",
-  follow_up: "bg-[#dbe7f4] text-[#2a4a6b]",
+  recommended: "bg-[#eef8f1] text-[#2c7b45]",
+  warning: "bg-[#fff4df] text-[#8a621b]",
+  observation: "bg-[#f5faff] text-[#4b5f7a]",
+  follow_up: "bg-[#edf5ff] text-[#315f9d]",
 };
 
 export default async function BriefsPage() {
@@ -17,26 +17,21 @@ export default async function BriefsPage() {
     <div className="space-y-6">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">gtm.briefs.read</p>
+          <p className="portal-kicker">Brief Analyst</p>
           <h1 className="portal-title">Weekly briefs</h1>
+          <p className="portal-muted mt-4 max-w-2xl text-lg">
+            A concise weekly readout: movement, decisions, and the few actions that matter.
+          </p>
         </div>
       </section>
 
-      <section className="portal-panel">
-        <p className="portal-muted max-w-3xl">
-          Every Monday the Brief Analyst synthesises the week: the trial → paid funnel,
-          week-over-week movement, targets, and PAM metrics — then extracts the actions below.
-          Actions also land in the signal inbox on the GTM control room.
-        </p>
-      </section>
-
       {briefs.length ? (
-        <section className="space-y-4">
+        <section className="space-y-3">
           {briefs.map((brief) => {
             const actions = actionsByBrief[brief.id] ?? [];
             return (
               <article className="portal-panel" key={brief.id}>
-                <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+                <div className="mb-4 flex flex-wrap items-start justify-between gap-3 border-b border-[#dceaf8] pb-4">
                   <div>
                     <p className="portal-kicker">{brief.product}</p>
                     <h2 className="portal-section-title">
@@ -51,22 +46,21 @@ export default async function BriefsPage() {
                   </p>
                 </div>
 
-                <p className="max-w-4xl text-base leading-7 text-[#33402f]">{brief.narrative}</p>
+                <p className="max-w-4xl text-base leading-7 text-[#202226]">{brief.narrative}</p>
 
                 {actions.length ? (
-                  <div className="mt-5 space-y-3">
-                    <p className="text-xs font-semibold uppercase text-[#64715d]">Actions</p>
-                    {actions.map((action) => (
-                      <div className="flex items-start gap-3" key={action.id}>
+                  <div className="mt-5 grid gap-3 lg:grid-cols-2">
+                    {actions.slice(0, 4).map((action) => (
+                      <div className="rounded-2xl border border-[#dceaf8] bg-white p-4" key={action.id}>
                         <span
-                          className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${
+                          className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${
                             ACTION_STYLES[action.action_type] ?? "bg-[#eceee8] text-[#5f6d58]"
                           }`}
                         >
                           {action.action_type}
                         </span>
-                        <div>
-                          <p className="text-sm font-medium">{action.title}</p>
+                        <div className="mt-3">
+                          <p className="text-sm font-medium text-[#202226]">{action.title}</p>
                           {action.detail ? (
                             <p className="portal-muted text-sm">{action.detail}</p>
                           ) : null}
@@ -77,10 +71,10 @@ export default async function BriefsPage() {
                 ) : null}
 
                 <details className="mt-5">
-                  <summary className="cursor-pointer text-xs font-semibold uppercase text-[#64715d]">
+                  <summary className="cursor-pointer text-xs font-semibold uppercase text-[#7b8491]">
                     Raw metrics
                   </summary>
-                  <pre className="mt-2 overflow-auto border border-[#d8ded0] bg-[#f8faf4] p-4 text-xs text-[#33402f]">
+                  <pre className="mt-2 overflow-auto rounded-2xl border border-[#dceaf8] bg-[#f8fbff] p-4 text-xs text-[#202226]">
                     {JSON.stringify(brief.raw_metrics, null, 2)}
                   </pre>
                 </details>
