@@ -64,6 +64,16 @@ export function buildStandupText(input: StandupInput): string {
     }
     if (funnel.payingTotal !== null) bits.push(`${funnel.payingTotal} paying`);
     lines.push(`Funnel: ${bits.join(" · ")}`);
+    const demoStarted = funnel.demoStarted7d ?? null;
+    if (demoStarted !== null) {
+      const demoBits = [`${demoStarted} WhatsApp demos started (7d)`];
+      if (funnel.demoEngaged7d !== null && funnel.demoEngaged7d !== undefined) demoBits.push(`${funnel.demoEngaged7d} engaged`);
+      if (funnel.demoConverted7d !== null && funnel.demoConverted7d !== undefined) {
+        const demoRate = conversionRate(demoStarted, funnel.demoConverted7d);
+        demoBits.push(`${funnel.demoConverted7d} signed up${demoRate !== null ? ` (${demoRate}%)` : ""}`);
+      }
+      lines.push(`WhatsApp demo: ${demoBits.join(" · ")}`);
+    }
   } else {
     lines.push("Funnel: not connected yet — apply the trial-funnel view to the PAM project.");
   }

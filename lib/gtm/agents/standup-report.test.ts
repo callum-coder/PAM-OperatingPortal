@@ -18,6 +18,9 @@ const base: StandupInput = {
     trialsExpired7d: 1,
     payingTotal: 31,
     avgDaysToConvert: 9,
+    demoStarted7d: 10,
+    demoEngaged7d: 4,
+    demoConverted7d: 3,
   },
   targets: [
     {
@@ -39,6 +42,7 @@ describe("buildStandupText", () => {
     expect(text).toContain("Content Strategist ok — 6 new");
     expect(text).toContain("4 open signals · 1 subsystem needs attention");
     expect(text).toContain("2 converted (7d, 40%)");
+    expect(text).toContain("WhatsApp demo: 10 WhatsApp demos started (7d) · 4 engaged · 3 signed up (30%)");
     expect(text).toContain("Paying customers 31/50 (62%)");
     expect(text).toContain("https://portal.example/gtm");
   });
