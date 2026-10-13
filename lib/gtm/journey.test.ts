@@ -10,10 +10,11 @@ import {
 } from "./journey";
 
 describe("TRIAL_JOURNEY", () => {
-  it("maps the 14-day journey from start to conversion", () => {
-    expect(TRIAL_JOURNEY[0].phase).toBe("Start");
+  it("maps the journey from the WhatsApp demo through the 14-day trial to conversion", () => {
+    expect(TRIAL_JOURNEY[0].phase).toBe("Try");
+    expect(TRIAL_JOURNEY[1].phase).toBe("Start");
     expect(TRIAL_JOURNEY[TRIAL_JOURNEY.length - 1].phase).toBe("Convert");
-    expect(TRIAL_JOURNEY).toHaveLength(5);
+    expect(TRIAL_JOURNEY).toHaveLength(6);
   });
 });
 
@@ -91,5 +92,15 @@ describe("formatDelta", () => {
     expect(formatDelta(-2)).toBe("-2");
     expect(formatDelta(0)).toBe("0");
     expect(formatDelta(null)).toBe("—");
+  });
+});
+
+describe("flattenBriefMetrics — WhatsApp demo stage", () => {
+  it("carries the demo counts when the PAM view exposes them, null otherwise", () => {
+    const flat = flattenBriefMetrics({ funnel: { demoStarted7d: 9, demoConverted7d: 2, trialsStarted7d: 4 } });
+    expect(flat.demoStarted7d).toBe(9);
+    expect(flat.demoConverted7d).toBe(2);
+    expect(flat.demoEngaged7d).toBeNull();
+    expect(flattenBriefMetrics({ funnel: {} }).demoStarted7d).toBeNull();
   });
 });

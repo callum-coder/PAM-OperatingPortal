@@ -9,6 +9,16 @@ export type TrialFunnelMetrics = {
   trialsExpired7d: number | null;
   payingTotal: number | null;
   avgDaysToConvert: number | null;
+  // The WhatsApp demo line — the stage before the 14-day trial. A visitor
+  // messages +44 7868 264023 and gets a sandbox portfolio; "engaged" means
+  // five or more messages; "converted" means they went on to create an
+  // account from the demo's sign-up link. Null until the PAM view exposes them.
+  demoStarted7d?: number | null;
+  demoActive?: number | null;
+  demoEngaged7d?: number | null;
+  demoConverted7d?: number | null;
+  demoConvertedTotal?: number | null;
+  signupsFromDemo7d?: number | null;
 };
 
 export type JourneyStage = {
@@ -21,6 +31,12 @@ export type JourneyStage = {
 // The mapped 14-day journey. Stages without live measures name what to
 // instrument next in the PAM product — the map is the plan, not a pretence.
 export const TRIAL_JOURNEY: JourneyStage[] = [
+  {
+    phase: "Try",
+    days: "Before day 0",
+    goal: "Landlord tries PAM on WhatsApp against a sample portfolio — no account",
+    measure: "demo_started_7d → demo_converted_7d (live)",
+  },
   {
     phase: "Start",
     days: "Day 0",
@@ -64,6 +80,8 @@ export function conversionRate(
 // The curated metric keys tracked across briefs. Flattened from the raw_metrics
 // shape stored on gtm_briefs: top-level PAM counts + crm{} + funnel{}.
 export const DELTA_METRICS: { key: string; label: string }[] = [
+  { key: "demoStarted7d", label: "WhatsApp demos started (7d)" },
+  { key: "demoConverted7d", label: "Demo → sign-up (7d)" },
   { key: "trialsStarted7d", label: "Trials started (7d)" },
   { key: "trialsConverted7d", label: "Trials converted (7d)" },
   { key: "trialsActive", label: "Trials active" },
@@ -79,6 +97,8 @@ export const DELTA_METRICS: { key: string; label: string }[] = [
 
 export const TARGETABLE_METRICS: { key: string; label: string }[] = [
   { key: "payingTotal", label: "Paying customers" },
+  { key: "demoStarted7d", label: "WhatsApp demos started (7d)" },
+  { key: "demoConverted7d", label: "Demo → sign-up (7d)" },
   { key: "trialsStarted7d", label: "Trials started (7d)" },
   { key: "trialsConverted7d", label: "Trials converted (7d)" },
   { key: "trialsActive", label: "Trials active" },
@@ -109,6 +129,12 @@ export function flattenBriefMetrics(
     trialsConverted7d: numberOrNull(funnel.trialsConverted7d),
     trialsExpired7d: numberOrNull(funnel.trialsExpired7d),
     payingTotal: numberOrNull(funnel.payingTotal),
+    demoStarted7d: numberOrNull(funnel.demoStarted7d),
+    demoActive: numberOrNull(funnel.demoActive),
+    demoEngaged7d: numberOrNull(funnel.demoEngaged7d),
+    demoConverted7d: numberOrNull(funnel.demoConverted7d),
+    demoConvertedTotal: numberOrNull(funnel.demoConvertedTotal),
+    signupsFromDemo7d: numberOrNull(funnel.signupsFromDemo7d),
   };
 }
 

@@ -44,6 +44,7 @@ export default async function JourneyPage() {
     (row) => row && row.delta !== null,
   );
   const rate = conversionRate(funnel?.trialsStarted7d ?? null, funnel?.trialsConverted7d ?? null);
+  const demoRate = conversionRate(funnel?.demoStarted7d ?? null, funnel?.demoConverted7d ?? null);
 
   return (
     <div className="space-y-8">
@@ -66,7 +67,7 @@ export default async function JourneyPage() {
           </div>
           <Route className="text-[#71806a]" size={20} />
         </div>
-        <div className="grid gap-3 md:grid-cols-5">
+        <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
           {TRIAL_JOURNEY.map((stage, index) => (
             <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-4" key={stage.phase}>
               <p className="text-xs font-semibold uppercase text-[#64715d]">
@@ -82,8 +83,25 @@ export default async function JourneyPage() {
 
       <section className="portal-panel">
         <h2 className="portal-section-title">Live funnel</h2>
+        {funnel && funnel.demoStarted7d !== null && funnel.demoStarted7d !== undefined ? (
+          <div className="mt-4">
+            <p className="portal-kicker">WhatsApp demo · +44 7868 264023</p>
+            <div className="mt-2 grid gap-4 sm:grid-cols-3 xl:grid-cols-5">
+              <FunnelMetric label="Demos started (7d)" value={funnel.demoStarted7d} />
+              <FunnelMetric label="Demos active" value={funnel.demoActive ?? null} />
+              <FunnelMetric label="Engaged (7d)" value={funnel.demoEngaged7d ?? null} />
+              <FunnelMetric label="Signed up (7d)" value={funnel.demoConverted7d ?? null} />
+              <FunnelMetric
+                label="Demo → sign-up (7d)"
+                value={demoRate}
+                suffix={demoRate === null ? undefined : "%"}
+              />
+            </div>
+            <p className="portal-kicker mt-6">14-day trial</p>
+          </div>
+        ) : null}
         {funnel ? (
-          <div className="mt-4 grid gap-4 sm:grid-cols-3 xl:grid-cols-6">
+          <div className="mt-2 grid gap-4 sm:grid-cols-3 xl:grid-cols-6">
             <FunnelMetric label="Trials started (7d)" value={funnel.trialsStarted7d} />
             <FunnelMetric label="Trials active" value={funnel.trialsActive} />
             <FunnelMetric label="Converted (7d)" value={funnel.trialsConverted7d} />

@@ -4,7 +4,7 @@ import postgres from "postgres";
 
 import type { BriefMetrics } from "./briefs";
 import type { TrialFunnelMetrics } from "./journey";
-import { mapWeeklyMetricsViewRow, type WeeklyMetricsViewRow } from "./pam-readonly-metrics";
+import { mapTrialFunnelRow, mapWeeklyMetricsViewRow, type WeeklyMetricsViewRow } from "./pam-readonly-metrics";
 import {
   classifyPamReadonlyConfig,
   type PamReadonlyConfigKind,
@@ -128,23 +128,11 @@ export async function readPamTrialFunnel(): Promise<TrialFunnelMetrics | null> {
       return null;
     }
 
-    const rows = await sql<
-      {
-        trials_active: number | null;
-        trials_started_7d: number | null;
-        trials_converted_7d: number | null;
-        trials_expired_7d: number | null;
-        paying_total: number | null;
-        avg_days_to_convert: string | number | null;
-      }[]
-    >`
-      select
-        trials_active,
-        trials_started_7d,
-        trials_converted_7d,
-        trials_expired_7d,
-        paying_total,
-        avg_days_to_convert
+    // Select the whole row: the customer view gained the WhatsApp demo
+    // columns in PAM migration-059, and an older deployment of the view must
+    // still produce the trial metrics rather than failing the query.
+    const rows = await sql<Record<string, unknown>[]>`
+      select *
       from portal_readonly.gtm_trial_funnel
       limit 1
     `;
@@ -152,14 +140,7 @@ export async function readPamTrialFunnel(): Promise<TrialFunnelMetrics | null> {
     const row = rows[0];
     if (!row) return null;
 
-    return {
-      trialsActive: toNullableNumber(row.trials_active),
-      trialsStarted7d: toNullableNumber(row.trials_started_7d),
-      trialsConverted7d: toNullableNumber(row.trials_converted_7d),
-      trialsExpired7d: toNullableNumber(row.trials_expired_7d),
-      payingTotal: toNullableNumber(row.paying_total),
-      avgDaysToConvert: toNullableNumber(row.avg_days_to_convert),
-    };
+    return mapTrialFunnelRow(row);
   } catch {
     return null;
   } finally {
@@ -167,11 +148,7 @@ export async function readPamTrialFunnel(): Promise<TrialFunnelMetrics | null> {
   }
 }
 
-function toNullableNumber(value: unknown): number | null {
-  if (value === null || value === undefined) return null;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
-}
+
 
 async function countPublicTables(sql: postgres.Sql): Promise<number> {
   const rows = await sql<{ count: string }[]>`
