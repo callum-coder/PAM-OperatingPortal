@@ -2,9 +2,9 @@ import { getBriefActionsByBrief, getLatestGtmBriefs } from "@/lib/gtm/briefs-dat
 import { requirePermission } from "@/lib/rbac/guard";
 
 const ACTION_STYLES: Record<string, string> = {
-  recommended: "bg-[#e6f4d8] text-[#3f5a23]",
-  warning: "bg-[#f7dada] text-[#7a2a2a]",
-  observation: "bg-[#eceee8] text-[#5f6d58]",
+  recommended: "bg-[#d0f5ee] text-[#0a6648]",
+  warning: "bg-[#fee2e2] text-[#b42318]",
+  observation: "bg-[#eef0f4] text-[#5b6472]",
   follow_up: "bg-[#dbe7f4] text-[#2a4a6b]",
 };
 
@@ -51,16 +51,16 @@ export default async function BriefsPage() {
                   </p>
                 </div>
 
-                <p className="max-w-4xl text-base leading-7 text-[#33402f]">{brief.narrative}</p>
+                <p className="max-w-4xl text-base leading-7 text-[#1a1a2e]">{brief.narrative}</p>
 
                 {actions.length ? (
                   <div className="mt-5 space-y-3">
-                    <p className="text-xs font-semibold uppercase text-[#64715d]">Actions</p>
+                    <p className="text-xs font-semibold uppercase text-[#5b6472]">Actions</p>
                     {actions.map((action) => (
                       <div className="flex items-start gap-3" key={action.id}>
                         <span
                           className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${
-                            ACTION_STYLES[action.action_type] ?? "bg-[#eceee8] text-[#5f6d58]"
+                            ACTION_STYLES[action.action_type] ?? "bg-[#eef0f4] text-[#5b6472]"
                           }`}
                         >
                           {action.action_type}
@@ -77,10 +77,10 @@ export default async function BriefsPage() {
                 ) : null}
 
                 <details className="mt-5">
-                  <summary className="cursor-pointer text-xs font-semibold uppercase text-[#64715d]">
+                  <summary className="cursor-pointer text-xs font-semibold uppercase text-[#5b6472]">
                     Raw metrics
                   </summary>
-                  <pre className="mt-2 overflow-auto border border-[#d8ded0] bg-[#f8faf4] p-4 text-xs text-[#33402f]">
+                  <pre className="mt-2 overflow-auto border border-[#e6e8ef] bg-[#ffffff] p-4 text-xs text-[#1a1a2e]">
                     {JSON.stringify(brief.raw_metrics, null, 2)}
                   </pre>
                 </details>

@@ -16,14 +16,14 @@ import { requirePermission } from "@/lib/rbac/guard";
 export const dynamic = "force-dynamic";
 
 const PILL: Record<ThreadState, string> = {
-  broken: "bg-[#fde8e8] text-[#8a1f1f]",
-  quiet: "bg-[#fff3d6] text-[#7a4b00]",
+  broken: "bg-[#fde8e8] text-[#b42318]",
+  quiet: "bg-[#fff3d6] text-[#92400e]",
   waiting_on_pam: "bg-[#e7f0ff] text-[#1f3d8a]",
   active: "bg-[#e7f0ff] text-[#1f3d8a]",
   waiting_on_visitor: "bg-[#eef3e8] text-[#2f4a2a]",
-  converted: "bg-[#d9ff73] text-[#162016]",
-  expired: "bg-[#eceeea] text-[#64715d]",
-  never_started: "bg-[#eceeea] text-[#64715d]",
+  converted: "bg-[#2ec4a0] text-[#1a1a2e]",
+  expired: "bg-[#eef0f4] text-[#5b6472]",
+  never_started: "bg-[#eef0f4] text-[#5b6472]",
 };
 
 export default async function DemoThreadsPage() {
@@ -80,12 +80,12 @@ export default async function DemoThreadsPage() {
                     className="-mx-2 flex flex-col gap-2 rounded-lg px-2 py-3 transition hover:bg-[#f4f7ef] md:flex-row md:items-start md:gap-6"
                   >
                     <div className="flex min-w-[11rem] items-center gap-3">
-                      <span className="grid h-10 w-10 place-items-center rounded-full bg-[#1b2419] text-[#d9ff73]">
+                      <span className="grid h-10 w-10 place-items-center rounded-full bg-[#1a1a2e] text-[#2ec4a0]">
                         <MessageSquare size={18} />
                       </span>
                       <div>
-                        <p className="font-semibold text-[#162016]">{threadTitle(thread)}</p>
-                        <p className="text-xs text-[#71806a]">
+                        <p className="font-semibold text-[#1a1a2e]">{threadTitle(thread)}</p>
+                        <p className="text-xs text-[#8b94a3]">
                           {thread.actingAs === "tenant" ? "Playing the tenant" : "Playing the landlord"} · {thread.inboundCount} in / {thread.outboundCount} out
                         </p>
                       </div>
@@ -93,16 +93,16 @@ export default async function DemoThreadsPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${PILL[verdict.state]}`}>{verdict.label}</span>
-                        <span className="text-xs text-[#71806a]">{demoStageLabel(thread.jobStatus)}</span>
+                        <span className="text-xs text-[#8b94a3]">{demoStageLabel(thread.jobStatus)}</span>
                       </div>
-                      <p className="mt-1 text-sm text-[#2f3a2c]">{verdict.detail}</p>
+                      <p className="mt-1 text-sm text-[#1a1a2e]">{verdict.detail}</p>
                       {thread.lastBody ? (
-                        <p className="mt-1 truncate text-sm text-[#64715d]">
+                        <p className="mt-1 truncate text-sm text-[#5b6472]">
                           <span className="font-medium">{thread.lastDirection === "inbound" ? "Visitor" : "PAM"}:</span> {truncate(thread.lastBody, 110)}
                         </p>
                       ) : null}
                     </div>
-                    <div className="text-right text-xs text-[#71806a] md:min-w-[7rem]">
+                    <div className="text-right text-xs text-[#8b94a3] md:min-w-[7rem]">
                       <p>{thread.lastMessageAt ? humanAge(now.getTime() - Date.parse(thread.lastMessageAt)) : "no messages"}</p>
                       <p>started {humanAge(now.getTime() - Date.parse(thread.startedAt))}</p>
                     </div>

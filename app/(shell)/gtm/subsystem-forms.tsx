@@ -23,11 +23,11 @@ export function CompetitorWatchForm() {
       </div>
       <div className="grid gap-3 md:grid-cols-2">
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-[#33402f]">Competitor</span>
+          <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Competitor</span>
           <input className="portal-input" name="competitor" required />
         </label>
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-[#33402f]">Watch type</span>
+          <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Watch type</span>
           <select className="portal-input" name="watch_type" defaultValue="pricing">
             <option value="pricing">Pricing</option>
             <option value="features">Features</option>
@@ -37,10 +37,10 @@ export function CompetitorWatchForm() {
         </label>
       </div>
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">URL</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">URL</span>
         <input className="portal-input" name="url" required type="url" />
       </label>
-      {state.error ? <p className="text-sm text-[#9a241b]">{state.error}</p> : null}
+      {state.error ? <p className="text-sm text-[#b42318]">{state.error}</p> : null}
       <button className="portal-primary-button" disabled={pending} type="submit">
         <Eye size={18} />
         {pending ? "Adding" : "Add watch"}
@@ -59,16 +59,16 @@ export function ContentItemForm() {
         <h2 className="portal-section-title">Create content item</h2>
       </div>
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">Title</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Title</span>
         <input className="portal-input" name="title" required />
       </label>
       <div className="grid gap-3 md:grid-cols-2">
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-[#33402f]">Target keyword</span>
+          <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Target keyword</span>
           <input className="portal-input" name="target_keyword" />
         </label>
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-[#33402f]">Stage</span>
+          <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Stage</span>
           <select className="portal-input" name="stage" defaultValue="idea">
             <option value="idea">Idea</option>
             <option value="drafting">Drafting</option>
@@ -85,10 +85,10 @@ export function ContentItemForm() {
         <ScoreSelect label="Effort" name="effort" />
       </div>
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">Notes</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Notes</span>
         <textarea className="portal-input min-h-20" name="notes" />
       </label>
-      {state.error ? <p className="text-sm text-[#9a241b]">{state.error}</p> : null}
+      {state.error ? <p className="text-sm text-[#b42318]">{state.error}</p> : null}
       <button className="portal-primary-button" disabled={pending} type="submit">
         <PenLine size={18} />
         {pending ? "Creating" : "Create content"}
@@ -107,28 +107,28 @@ export function ExperimentForm() {
         <h2 className="portal-section-title">Design experiment</h2>
       </div>
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">Name</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Name</span>
         <input className="portal-input" name="name" required />
       </label>
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">Hypothesis</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Hypothesis</span>
         <textarea className="portal-input min-h-20" name="hypothesis" />
       </label>
       <div className="grid gap-3 md:grid-cols-3">
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-[#33402f]">Metric</span>
+          <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Metric</span>
           <input className="portal-input" name="metric" />
         </label>
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-[#33402f]">Baseline</span>
+          <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Baseline</span>
           <input className="portal-input" name="baseline" type="number" step="0.01" />
         </label>
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-[#33402f]">Target</span>
+          <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Target</span>
           <input className="portal-input" name="target" type="number" step="0.01" />
         </label>
       </div>
-      {state.error ? <p className="text-sm text-[#9a241b]">{state.error}</p> : null}
+      {state.error ? <p className="text-sm text-[#b42318]">{state.error}</p> : null}
       <button className="portal-primary-button" disabled={pending} type="submit">
         <FlaskConical size={18} />
         {pending ? "Creating" : "Create experiment"}
@@ -140,7 +140,7 @@ export function ExperimentForm() {
 function ScoreSelect({ label, name }: { label: string; name: string }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-medium text-[#33402f]">{label}</span>
+      <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">{label}</span>
       <select className="portal-input" name={name} defaultValue="3">
         <option value="1">1</option>
         <option value="2">2</option>

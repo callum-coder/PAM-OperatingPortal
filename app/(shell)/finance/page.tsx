@@ -46,7 +46,7 @@ export default async function FinancePage() {
       ) : (
         <section className="portal-panel">
           <div className="flex items-start gap-3">
-            <Coins className="mt-0.5 shrink-0 text-[#71806a]" size={20} />
+            <Coins className="mt-0.5 shrink-0 text-[#8b94a3]" size={20} />
             <div>
               <h2 className="portal-section-title">Connect Xero</h2>
               <p className="portal-muted mt-2 max-w-2xl">
@@ -97,11 +97,11 @@ function MoneyTile({
 }) {
   const delta = value !== null && compareValue !== null ? value - compareValue : null;
   return (
-    <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-4">
+    <div className="rounded-lg border border-[#e6e8ef] bg-[#ffffff] p-4">
       <p className="portal-muted text-sm">{label}</p>
       <p className="mt-2 text-3xl font-semibold">{formatMoney(value)}</p>
       {delta !== null ? (
-        <p className={`mt-1 text-xs ${delta >= 0 ? "text-[#28734d]" : "text-[#b42318]"}`}>
+        <p className={`mt-1 text-xs ${delta >= 0 ? "text-[#0a6648]" : "text-[#b42318]"}`}>
           {delta >= 0 ? "+" : ""}
           {formatMoney(delta)} vs last month
         </p>

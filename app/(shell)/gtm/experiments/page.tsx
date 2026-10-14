@@ -19,7 +19,7 @@ export default async function ExperimentsPage() {
         <ExperimentForm />
         <div className="portal-panel">
           <h2 className="portal-section-title">Experiment ledger</h2>
-          <div className="mt-4 divide-y divide-[#dfe5d8]">
+          <div className="mt-4 divide-y divide-[#e6e8ef]">
             {experiments.length ? experiments.map((experiment) => (
               <div className="grid gap-2 py-4 md:grid-cols-[1fr_120px]" key={experiment.id}>
                 <div>

@@ -14,10 +14,10 @@ import { getReadableModules, hasPermission } from "@/lib/rbac/permissions";
 import { requireUser } from "@/lib/rbac/guard";
 
 const statusTone = {
-  ok: "text-[#28734d]",
-  warning: "text-[#9f6a00]",
+  ok: "text-[#0a6648]",
+  warning: "text-[#92400e]",
   error: "text-[#b42318]",
-  idle: "text-[#697567]",
+  idle: "text-[#8b94a3]",
 };
 
 export default async function DashboardPage() {
@@ -108,9 +108,9 @@ export default async function DashboardPage() {
                       {target.progressPct !== null ? ` · ${target.progressPct}%` : ""}
                     </span>
                   </div>
-                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-[#e7ebe1]">
+                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-[#e6e8ef]">
                     <div
-                      className="h-full rounded-full bg-[#d9ff73]"
+                      className="h-full rounded-full bg-[#2ec4a0]"
                       style={{ width: `${Math.min(100, target.progressPct ?? 0)}%` }}
                     />
                   </div>
@@ -129,11 +129,11 @@ export default async function DashboardPage() {
               One shared table, filtered by the permissions attached to your roles.
             </p>
           </div>
-          <Clock3 className="text-[#71806a]" size={20} />
+          <Clock3 className="text-[#8b94a3]" size={20} />
         </div>
 
         {statuses.length ? (
-          <div className="divide-y divide-[#dfe5d8]">
+          <div className="divide-y divide-[#e6e8ef]">
             {statuses.map((row) => (
               <div className="grid gap-3 py-4 md:grid-cols-[1fr_140px_180px]" key={row.id}>
                 <div>
@@ -176,7 +176,7 @@ function RevenueTile({
   suffix?: string;
 }) {
   return (
-    <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-4">
+    <div className="rounded-lg border border-[#e6e8ef] bg-[#ffffff] p-4">
       <p className="portal-muted text-sm">{label}</p>
       <p className="mt-2 text-3xl font-semibold">
         {value === null ? "—" : `${value.toLocaleString("en-GB")}${suffix ?? ""}`}
@@ -196,7 +196,7 @@ function MetricCard({ label, value }: { label: string; value: number }) {
 
 function EmptyState({ title, body }: { title: string; body: string }) {
   return (
-    <div className="border border-dashed border-[#c6d0bc] bg-[#f8faf4] p-6">
+    <div className="border border-dashed border-[#c6d0bc] bg-[#ffffff] p-6">
       <p className="font-medium">{title}</p>
       <p className="portal-muted mt-1">{body}</p>
     </div>

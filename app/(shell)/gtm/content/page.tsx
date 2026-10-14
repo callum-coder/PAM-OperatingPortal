@@ -24,7 +24,7 @@ export default async function ContentPage() {
         <ContentItemForm />
         <div className="portal-panel">
           <h2 className="portal-section-title">Priority queue</h2>
-          <div className="mt-4 divide-y divide-[#dfe5d8]">
+          <div className="mt-4 divide-y divide-[#e6e8ef]">
             {items.length ? items.map((item) => (
               <div className="grid items-center gap-2 py-4 md:grid-cols-[1fr_84px_70px_92px]" key={item.id}>
                 <div>
@@ -56,7 +56,7 @@ export default async function ContentPage() {
                       </form>
                     </>
                   ) : item.stage === "review" ? (
-                    <span className="text-xs font-semibold uppercase text-[#3f5a23]">Drafted</span>
+                    <span className="text-xs font-semibold uppercase text-[#0a6648]">Drafted</span>
                   ) : null}
                 </div>
               </div>
