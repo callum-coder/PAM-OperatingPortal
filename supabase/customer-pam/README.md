@@ -27,3 +27,10 @@ WhatsApp demo line as the stage before the trial: `demo_started_7d`,
 and `signups_from_demo_7d`. Counts only, as before. It grants to
 `pam_portal_readonly` when that role exists; the notes at the end of the file
 cover creating it and the connection string for `PAM_DATABASE_URL_READONLY`.
+
+`004_portal_readonly_demo_threads.sql` (a copy of PAM `migration-060`) is the
+one deliberate exception to counts-only: `portal_readonly.demo_threads` and
+`demo_thread_messages` expose the WhatsApp demo line conversation by
+conversation, so GTM → Demo threads can show where a prospect's chat broke.
+Only the demo line crosses (line = 'demo'), numbers are reduced to their last
+four digits, and no landlord data is involved.

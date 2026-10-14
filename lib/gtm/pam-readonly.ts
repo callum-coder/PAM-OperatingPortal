@@ -4,6 +4,7 @@ import postgres from "postgres";
 
 import type { BriefMetrics } from "./briefs";
 import type { TrialFunnelMetrics } from "./journey";
+import { mapDemoMessageRow, mapDemoThreadRow, type DemoMessage, type DemoThread } from "./demo-threads";
 import { mapTrialFunnelRow, mapWeeklyMetricsViewRow, type WeeklyMetricsViewRow } from "./pam-readonly-metrics";
 import {
   classifyPamReadonlyConfig,
@@ -208,4 +209,71 @@ async function countLikelyTable(
   }
 
   return countIfTableExists(sql, table.table_schema, table.table_name);
+}
+
+function readonlyClient() {
+  const url = process.env.PAM_DATABASE_URL_READONLY;
+  if (classifyPamReadonlyConfig(url) !== "postgres") return null;
+  return postgres(url!, { max: 1, ssl: "require", idle_timeout: 3, connect_timeout: 10 });
+}
+
+async function viewExists(sql: ReturnType<typeof postgres>, name: string): Promise<boolean> {
+  const rows = await sql<{ exists: boolean }[]>`
+    select exists (
+      select 1 from information_schema.views
+      where table_schema = 'portal_readonly' and table_name = ${name}
+    )
+  `;
+  return rows[0]?.exists === true;
+}
+
+// The WhatsApp demo line, one row per visitor sandbox, from
+// portal_readonly.demo_threads (PAM migration-060). Null means "not
+// connected" (no config, view not yet created, or the query failed); an
+// empty array means connected with no threads.
+export async function readPamDemoThreads(): Promise<DemoThread[] | null> {
+  const sql = readonlyClient();
+  if (!sql) return null;
+  try {
+    if (!(await viewExists(sql, "demo_threads"))) return null;
+    const rows = await sql<Record<string, unknown>[]>`
+      select * from portal_readonly.demo_threads
+      order by coalesce(last_message_at, started_at) desc
+      limit 500
+    `;
+    return rows.map(mapDemoThreadRow);
+  } catch {
+    return null;
+  } finally {
+    await sql.end({ timeout: 2 });
+  }
+}
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** One thread with every message on it, oldest first. Null when not
+ *  connected or the sandbox does not exist. */
+export async function readPamDemoThread(sandboxId: string): Promise<{ thread: DemoThread; messages: DemoMessage[] } | null> {
+  if (!UUID.test(sandboxId)) return null;
+  const sql = readonlyClient();
+  if (!sql) return null;
+  try {
+    if (!(await viewExists(sql, "demo_thread_messages"))) return null;
+    const threads = await sql<Record<string, unknown>[]>`
+      select * from portal_readonly.demo_threads where sandbox_id = ${sandboxId}::uuid limit 1
+    `;
+    const row = threads[0];
+    if (!row) return null;
+    const messages = await sql<Record<string, unknown>[]>`
+      select * from portal_readonly.demo_thread_messages
+      where sandbox_id = ${sandboxId}::uuid
+      order by created_at asc
+      limit 2000
+    `;
+    return { thread: mapDemoThreadRow(row), messages: messages.map(mapDemoMessageRow) };
+  } catch {
+    return null;
+  } finally {
+    await sql.end({ timeout: 2 });
+  }
 }
