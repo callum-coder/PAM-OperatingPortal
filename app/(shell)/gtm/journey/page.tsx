@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Route, Target as TargetIcon, Trash2 } from "lucide-react";
 
 import { getLatestGtmBriefs } from "@/lib/gtm/briefs-data";
@@ -85,7 +86,12 @@ export default async function JourneyPage() {
         <h2 className="portal-section-title">Live funnel</h2>
         {funnel && funnel.demoStarted7d !== null && funnel.demoStarted7d !== undefined ? (
           <div className="mt-4">
-            <p className="portal-kicker">WhatsApp demo · +44 7868 264023</p>
+            <div className="flex items-center justify-between gap-4">
+              <p className="portal-kicker">WhatsApp demo · +44 7868 264023</p>
+              <Link className="text-sm font-medium text-[#1b2419] underline-offset-4 hover:underline" href="/gtm/demo">
+                Read every conversation →
+              </Link>
+            </div>
             <div className="mt-2 grid gap-4 sm:grid-cols-3 xl:grid-cols-5">
               <FunnelMetric label="Demos started (7d)" value={funnel.demoStarted7d} />
               <FunnelMetric label="Demos active" value={funnel.demoActive ?? null} />

@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Magnet,
   Megaphone,
+  MessageSquare,
   Newspaper,
   Radar,
   Route,
@@ -53,6 +54,12 @@ export const modules: ModuleRegistryEntry[] = [
         href: "/gtm/journey",
         requiredPermission: "gtm.briefs.read",
         icon: Route,
+      },
+      {
+        label: "Demo threads",
+        href: "/gtm/demo",
+        requiredPermission: "gtm.briefs.read",
+        icon: MessageSquare,
       },
       {
         label: "Leads",
