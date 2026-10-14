@@ -7,6 +7,7 @@ import {
   classifyThread,
   demoStageLabel,
   humanAge,
+  threadTitle,
   type DemoThread,
   type ThreadVerdict,
 } from "@/lib/gtm/demo-threads";
@@ -39,7 +40,7 @@ export default async function DemoThreadPage({ params }: PageProps) {
 
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">WhatsApp demo · visitor ••• {thread.phoneLast4}</p>
+          <p className="portal-kicker">WhatsApp demo · {threadTitle(thread)}</p>
           <h1 className="portal-title">{verdict.label}</h1>
           <p className="portal-muted mt-2 max-w-2xl">{verdict.detail}</p>
         </div>
@@ -55,6 +56,7 @@ export default async function DemoThreadPage({ params }: PageProps) {
 
 function Facts({ thread, verdict, now, messageCount }: { thread: DemoThread; verdict: ThreadVerdict; now: Date; messageCount: number }) {
   const rows: [string, string][] = [
+    ["Called", thread.visitorFirstName ?? "did not give a name"],
     ["Stage", demoStageLabel(thread.jobStatus)],
     ["Playing", thread.actingAs === "tenant" ? "the tenant" : "the landlord"],
     ["Messages", `${thread.inboundCount} from the visitor · ${thread.outboundCount} from PAM${thread.failedCount ? ` · ${thread.failedCount} failed` : ""} (${messageCount} on the line)`],

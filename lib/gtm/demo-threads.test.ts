@@ -8,6 +8,7 @@ import {
   mapDemoMessageRow,
   mapDemoThreadRow,
   stripMirrorLabel,
+  threadTitle,
   type DemoThread,
 } from "./demo-threads";
 
@@ -21,7 +22,7 @@ function thread(over: Partial<DemoThread> = {}): DemoThread {
     sandboxId: "s1", phoneLast4: "1234", startedAt: ago(2 * HOUR), lastSeenAt: ago(HOUR), expiresAt: new Date(now.getTime() + 13 * 24 * HOUR).toISOString(),
     messageCount: 3, actingAs: "landlord", converted: false, convertedAt: null, inboundCount: 3, outboundCount: 4, failedCount: 0,
     firstInboundAt: ago(2 * HOUR), lastMessageAt: ago(HOUR), lastDirection: "outbound", lastBody: "Shall I find a contractor?", lastStatus: "read",
-    lastIsMirror: false, jobStatus: "awaiting_approval", jobNextActionAt: null, ...over,
+    lastIsMirror: false, jobStatus: "awaiting_approval", jobNextActionAt: null, visitorFirstName: null, ...over,
   };
 }
 
@@ -93,5 +94,14 @@ describe("annotateGaps", () => {
     ]);
     expect(items.map((i) => i.type)).toEqual(["message", "message", "gap", "message"]);
     expect(items[2]).toMatchObject({ type: "gap", label: "2 hours later" });
+  });
+});
+
+describe("threadTitle", () => {
+  it("leads with the visitor's name when PAM was told one", () => {
+    expect(threadTitle({ visitorFirstName: "Callum", phoneLast4: "4821" })).toBe("Callum ··· 4821");
+    expect(threadTitle({ visitorFirstName: null, phoneLast4: "4821" })).toBe("··· 4821");
+    expect(mapDemoThreadRow({ sandbox_id: "s", visitor_first_name: "  Priya " }).visitorFirstName).toBe("Priya");
+    expect(mapDemoThreadRow({ sandbox_id: "s" }).visitorFirstName).toBeNull();
   });
 });

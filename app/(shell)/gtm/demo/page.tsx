@@ -6,6 +6,7 @@ import {
   demoStageLabel,
   groupThreads,
   humanAge,
+  threadTitle,
   truncate,
   type ThreadState,
 } from "@/lib/gtm/demo-threads";
@@ -83,7 +84,7 @@ export default async function DemoThreadsPage() {
                         <MessageSquare size={18} />
                       </span>
                       <div>
-                        <p className="font-semibold text-[#162016]">••• {thread.phoneLast4}</p>
+                        <p className="font-semibold text-[#162016]">{threadTitle(thread)}</p>
                         <p className="text-xs text-[#71806a]">
                           {thread.actingAs === "tenant" ? "Playing the tenant" : "Playing the landlord"} · {thread.inboundCount} in / {thread.outboundCount} out
                         </p>
