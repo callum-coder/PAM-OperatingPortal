@@ -13,7 +13,8 @@ import {
   type MetricDelta,
 } from "@/lib/gtm/journey";
 import { getTargets } from "@/lib/gtm/journey-data";
-import { readPamTrialFunnel } from "@/lib/gtm/pam-readonly";
+import { readPamLifecycle, readPamTrialFunnel } from "@/lib/gtm/pam-readonly";
+import { activationRate, answerRate } from "@/lib/gtm/lifecycle";
 import { getHubspotGtmMetrics } from "@/lib/hubspot";
 import { requirePermission } from "@/lib/rbac/guard";
 import { hasPermission } from "@/lib/rbac/permissions";
@@ -23,11 +24,12 @@ export default async function JourneyPage() {
   const user = await requirePermission("gtm.briefs.read");
   const canEdit = hasPermission(user.roles, "gtm.briefs.write");
 
-  const [funnel, crm, targets, briefs] = await Promise.all([
+  const [funnel, crm, targets, briefs, lifecycle] = await Promise.all([
     readPamTrialFunnel(),
     getHubspotGtmMetrics(),
     getTargets(),
     getLatestGtmBriefs(1),
+    readPamLifecycle(),
   ]);
 
   const mtd = getMtdCountdown();
@@ -80,6 +82,31 @@ export default async function JourneyPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="portal-panel">
+        <div className="mb-4">
+          <p className="portal-kicker">Lifecycle engine · last 7 days</p>
+          <h2 className="portal-section-title">What PAM did this week</h2>
+        </div>
+        {lifecycle && lifecycle.touchesSent7d !== null ? (
+          <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-6">
+            <FunnelMetric label="Touches sent" value={lifecycle.touchesSent7d} />
+            <FunnelMetric label="By WhatsApp" value={lifecycle.touchesWhatsapp7d} />
+            <FunnelMetric label="Answered within 48h" value={answerRate(lifecycle)} suffix={answerRate(lifecycle) === null ? undefined : "%"} />
+            <FunnelMetric label="Demo → trial" value={lifecycle.demoToTrial7d} />
+            <FunnelMetric label="Opted out" value={lifecycle.optOuts7d} />
+            <FunnelMetric label="Failed sends" value={lifecycle.touchesFailed7d} />
+            <FunnelMetric label="Trials with a property" value={activationRate(lifecycle, "trialsWithProperty")} suffix="%" />
+            <FunnelMetric label="…with a tenant" value={activationRate(lifecycle, "trialsWithTenant")} suffix="%" />
+            <FunnelMetric label="…collecting rent" value={activationRate(lifecycle, "trialsWithGocardless")} suffix="%" />
+            <FunnelMetric label="…bank connected" value={activationRate(lifecycle, "trialsWithBankFeed")} suffix="%" />
+            <FunnelMetric label="…HMRC connected" value={activationRate(lifecycle, "trialsWithHmrc")} suffix="%" />
+            <FunnelMetric label="…messaged PAM" value={activationRate(lifecycle, "trialsOnWhatsapp")} suffix="%" />
+          </div>
+        ) : (
+          <p className="portal-muted">Lifecycle not connected: run PAM migration-064 (it adds <code>portal_readonly.lifecycle_stages</code>).</p>
+        )}
       </section>
 
       <section className="portal-panel">

@@ -1,3 +1,4 @@
+import { lifecycleLine, type LifecycleMetrics } from "../lifecycle";
 import {
   conversionRate,
   type TargetEvaluation,
@@ -21,6 +22,8 @@ export type StandupInput = {
   openSignals: number;
   attentionSubsystems: number;
   funnel: TrialFunnelMetrics | null;
+  /** PAM's lifecycle engine (migration-064); optional until the view exists. */
+  lifecycle?: LifecycleMetrics | null;
   targets: TargetEvaluation[];
   baseUrl: string | null;
 };
@@ -77,6 +80,8 @@ export function buildStandupText(input: StandupInput): string {
   } else {
     lines.push("Funnel: not connected yet — apply the trial-funnel view to the PAM project.");
   }
+  const life = lifecycleLine(input.lifecycle ?? null);
+  if (life) lines.push(life);
 
   if (input.targets.length) {
     const targetLine = input.targets
