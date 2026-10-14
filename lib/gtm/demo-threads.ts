@@ -24,6 +24,8 @@ export type DemoThread = {
   lastIsMirror: boolean;
   jobStatus: string | null;
   jobNextActionAt: string | null;
+  /** What they asked PAM to call them (PAM migration-061); null on older views. */
+  visitorFirstName: string | null;
 };
 
 export type DemoMessage = {
@@ -83,7 +85,13 @@ export function mapDemoThreadRow(row: Record<string, unknown>): DemoThread {
     lastIsMirror: row.last_is_mirror === true,
     jobStatus: str(row.job_status),
     jobNextActionAt: iso(row.job_next_action_at),
+    visitorFirstName: str(row.visitor_first_name)?.trim() || null,
   };
+}
+
+/** "Callum ··· 4821" or "··· 4821". */
+export function threadTitle(t: Pick<DemoThread, "visitorFirstName" | "phoneLast4">): string {
+  return t.visitorFirstName ? `${t.visitorFirstName} ··· ${t.phoneLast4}` : `··· ${t.phoneLast4}`;
 }
 
 export function mapDemoMessageRow(row: Record<string, unknown>): DemoMessage {

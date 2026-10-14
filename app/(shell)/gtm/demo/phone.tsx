@@ -32,7 +32,7 @@ export function Phone({ thread, items, verdict }: { thread: DemoThread; items: T
           <span className="grid h-9 w-9 place-items-center rounded-full bg-[#d9ff73] text-sm font-bold text-[#162016]">P</span>
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold">PAM demo</p>
-            <p className="truncate text-[11px] text-white/80">+44 7868 264023 · {thread.actingAs === "tenant" ? "you are the tenant" : "you are the landlord"}</p>
+            <p className="truncate text-[11px] text-white/80">+44 7868 264023 · {thread.visitorFirstName ? `${thread.visitorFirstName}, ` : ""}{thread.actingAs === "tenant" ? "playing the tenant" : "playing the landlord"}</p>
           </div>
         </div>
         <div className="max-h-[70vh] min-h-[28rem] space-y-1.5 overflow-y-auto bg-[#e5ddd5] px-3 py-3" style={{ backgroundImage: "radial-gradient(#d9d2c8 0.6px, transparent 0.6px)", backgroundSize: "14px 14px" }}>
