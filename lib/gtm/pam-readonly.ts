@@ -5,6 +5,7 @@ import postgres from "postgres";
 import type { BriefMetrics } from "./briefs";
 import type { TrialFunnelMetrics } from "./journey";
 import { mapDemoMessageRow, mapDemoThreadRow, type DemoMessage, type DemoThread } from "./demo-threads";
+import { mapLifecycleRow, type LifecycleMetrics } from "./lifecycle";
 import { mapTrialFunnelRow, mapWeeklyMetricsViewRow, type WeeklyMetricsViewRow } from "./pam-readonly-metrics";
 import {
   classifyPamReadonlyConfig,
@@ -271,6 +272,21 @@ export async function readPamDemoThread(sandboxId: string): Promise<{ thread: De
       limit 2000
     `;
     return { thread: mapDemoThreadRow(row), messages: messages.map(mapDemoMessageRow) };
+  } catch {
+    return null;
+  } finally {
+    await sql.end({ timeout: 2 });
+  }
+}
+
+/** The lifecycle engine's counts (PAM migration-064). Null when not connected. */
+export async function readPamLifecycle(): Promise<LifecycleMetrics | null> {
+  const sql = readonlyClient();
+  if (!sql) return null;
+  try {
+    if (!(await viewExists(sql, "lifecycle_stages"))) return null;
+    const rows = await sql<Record<string, unknown>[]>`select * from portal_readonly.lifecycle_stages limit 1`;
+    return rows[0] ? mapLifecycleRow(rows[0]) : null;
   } catch {
     return null;
   } finally {

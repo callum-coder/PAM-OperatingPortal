@@ -5,7 +5,7 @@ import { createPortalAdminClient, hasPortalSupabaseConfig } from "@/lib/supabase
 import { getMtdCountdown } from "@/lib/gtm/briefs";
 import { evaluateTargets, flattenBriefMetrics } from "@/lib/gtm/journey";
 import { getTargets } from "@/lib/gtm/journey-data";
-import { readPamTrialFunnel } from "@/lib/gtm/pam-readonly";
+import { readPamLifecycle, readPamTrialFunnel } from "@/lib/gtm/pam-readonly";
 import { getHubspotGtmMetrics } from "@/lib/hubspot";
 
 import { getAgent, listAgents } from "./registry";
@@ -56,7 +56,7 @@ export async function executeGtmStandup(): Promise<StandupExecution> {
     const supabase = createPortalAdminClient();
     const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-    const [runsResult, signalsResult, statusResult, funnel, crm, targetRows] = await Promise.all([
+    const [runsResult, signalsResult, statusResult, funnel, crm, targetRows, lifecycle] = await Promise.all([
       supabase
         .from("gtm_agent_runs")
         .select("agent_id,status,summary,items_created,created_at")
@@ -74,6 +74,7 @@ export async function executeGtmStandup(): Promise<StandupExecution> {
       readPamTrialFunnel(),
       getHubspotGtmMetrics(),
       getTargets(),
+          readPamLifecycle().catch(() => null),
     ]);
 
     if (runsResult.error) throw new Error(`Failed to read agent runs: ${runsResult.error.message}`);
@@ -111,6 +112,7 @@ export async function executeGtmStandup(): Promise<StandupExecution> {
       openSignals: signalsResult.count ?? 0,
       attentionSubsystems: (statusResult.data ?? []).length,
       funnel,
+      lifecycle,
       targets,
       baseUrl: process.env.PORTAL_BASE_URL ?? null,
     });

@@ -22,6 +22,7 @@ const base: StandupInput = {
     demoEngaged7d: 4,
     demoConverted7d: 3,
   },
+  lifecycle: { demoJourneys: 1, trialJourneys: 2, payingJourneys: 1, pausedJourneys: 0, expiredJourneys: 0, cancelledJourneys: 0, optedOutTotal: 0, touchesSent7d: 5, touchesWhatsapp7d: 3, touchesEmail7d: 2, touchesFailed7d: 0, touchesSkipped7d: 1, touchesAnswered7d: 2, optOuts7d: 0, demoToTrial7d: 1, trialsTotal: 2, trialsWithProperty: 1, trialsWithTenant: 0, trialsWithGocardless: 0, trialsWithBankFeed: 0, trialsWithHmrc: 0, trialsOnWhatsapp: 1 },
   targets: [
     {
       metric: "payingTotal",
@@ -43,6 +44,7 @@ describe("buildStandupText", () => {
     expect(text).toContain("4 open signals · 1 subsystem needs attention");
     expect(text).toContain("2 converted (7d, 40%)");
     expect(text).toContain("WhatsApp demo: 10 WhatsApp demos started (7d) · 4 engaged · 3 signed up (30%)");
+    expect(text).toContain("Lifecycle: 5 touches sent (7d) · 3 WhatsApp / 2 email · 40% answered · 1 demo → trial · 50% of trials have a property");
     expect(text).toContain("Paying customers 31/50 (62%)");
     expect(text).toContain("https://portal.example/gtm");
   });
