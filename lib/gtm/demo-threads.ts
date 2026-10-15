@@ -62,6 +62,16 @@ function iso(v: unknown): string | null {
   return String(v);
 }
 
+/**
+ * Sign-up links PAM sends on the demo line carry a signed token (?wa=…)
+ * that encodes the visitor's full number. The Ops view masks numbers to the
+ * last four digits, so hide the token too.
+ */
+export function maskSignupTokens(body: string | null): string | null {
+  if (!body) return body;
+  return body.replace(/([?&]wa=)[A-Za-z0-9_\-.%]+/g, "$1…");
+}
+
 export function mapDemoThreadRow(row: Record<string, unknown>): DemoThread {
   const dir = str(row.last_direction);
   return {
@@ -80,7 +90,7 @@ export function mapDemoThreadRow(row: Record<string, unknown>): DemoThread {
     firstInboundAt: iso(row.first_inbound_at),
     lastMessageAt: iso(row.last_message_at),
     lastDirection: dir === "inbound" || dir === "outbound" ? dir : null,
-    lastBody: str(row.last_body),
+    lastBody: maskSignupTokens(str(row.last_body)),
     lastStatus: str(row.last_status),
     lastIsMirror: row.last_is_mirror === true,
     jobStatus: str(row.job_status),
@@ -114,7 +124,7 @@ export function mapDemoMessageRow(row: Record<string, unknown>): DemoMessage {
     direction: row.direction === "inbound" ? "inbound" : "outbound",
     kind: str(row.kind) ?? "text",
     templateName: str(row.template_name),
-    body: str(row.body),
+    body: maskSignupTokens(str(row.body)),
     status: str(row.status),
     error: str(row.error),
     createdAt: iso(row.created_at) ?? new Date(0).toISOString(),
