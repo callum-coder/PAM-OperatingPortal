@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  maskSignupTokens,
   annotateGaps,
   classifyThread,
   groupThreads,
@@ -103,5 +104,15 @@ describe("threadTitle", () => {
     expect(threadTitle({ visitorFirstName: null, phoneLast4: "4821" })).toBe("··· 4821");
     expect(mapDemoThreadRow({ sandbox_id: "s", visitor_first_name: "  Priya " }).visitorFirstName).toBe("Priya");
     expect(mapDemoThreadRow({ sandbox_id: "s" }).visitorFirstName).toBeNull();
+  });
+});
+
+describe("maskSignupTokens", () => {
+  it("hides the number-bearing token in sign-up links", () => {
+    expect(maskSignupTokens("Sign up: https://app.propertyaimanager.com/auth/signup?via=whatsapp-demo&wa=NDQ3ODgxMzQ0MjE4LjE3OTMz.abc")).toBe(
+      "Sign up: https://app.propertyaimanager.com/auth/signup?via=whatsapp-demo&wa=…",
+    );
+    expect(maskSignupTokens("no link here")).toBe("no link here");
+    expect(maskSignupTokens(null)).toBe(null);
   });
 });
