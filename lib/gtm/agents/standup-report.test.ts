@@ -38,7 +38,7 @@ const base: StandupInput = {
 describe("buildStandupText", () => {
   it("rolls up fleet, inbox, funnel, and targets", () => {
     const text = buildStandupText(base);
-    expect(text).toContain("34 days to the MTD wedge");
+    expect(text).toContain("34 days to the next MTD deadline");
     expect(text).toContain("Content Strategist ok — 6 new");
     expect(text).toContain("4 open signals · 1 subsystem needs attention");
     expect(text).toContain("2 converted (7d, 40%)");

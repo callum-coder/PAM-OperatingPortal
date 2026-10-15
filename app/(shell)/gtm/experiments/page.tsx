@@ -10,7 +10,7 @@ export default async function ExperimentsPage() {
     <div className="space-y-6">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">gtm.experiments.read</p>
+          <p className="portal-kicker">GTM · Experiments</p>
           <h1 className="portal-title">Experiment loop</h1>
         </div>
       </section>

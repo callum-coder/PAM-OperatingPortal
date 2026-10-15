@@ -67,7 +67,7 @@ export function buildContentAgentInput(snapshot: ContentSnapshot): string {
 
   return [
     `Today is ${snapshot.today}. Generate 5 to 8 content ideas for ${snapshot.product.toUpperCase()}.`,
-    `${snapshot.mtd.daysRemaining} days remain until the ${snapshot.mtd.targetDate} MTD wedge date — weight urgency accordingly.`,
+    `${snapshot.mtd.daysRemaining} days remain until the ${snapshot.mtd.targetDate} MTD quarterly deadline — weight urgency accordingly.`,
     "",
     "Current content pipeline by stage:",
     stageLines,

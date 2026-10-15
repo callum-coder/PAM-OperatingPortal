@@ -17,7 +17,7 @@ export default async function BriefsPage() {
     <div className="space-y-6">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">gtm.briefs.read</p>
+          <p className="portal-kicker">GTM · Weekly briefs</p>
           <h1 className="portal-title">Weekly briefs</h1>
         </div>
       </section>

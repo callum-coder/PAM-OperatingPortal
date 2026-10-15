@@ -30,7 +30,7 @@ export default async function CompetitorsPage() {
     <div className="space-y-6">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">gtm.competitors.read</p>
+          <p className="portal-kicker">GTM · Competitors</p>
           <h1 className="portal-title">Competitor monitor</h1>
         </div>
         {canScan ? (

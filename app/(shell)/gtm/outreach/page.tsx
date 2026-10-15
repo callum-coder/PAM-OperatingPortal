@@ -34,7 +34,7 @@ export default async function OutreachPage() {
     <div className="space-y-6">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">gtm.outreach.read</p>
+          <p className="portal-kicker">GTM · Outreach</p>
           <h1 className="portal-title">Outreach loops</h1>
         </div>
       </section>

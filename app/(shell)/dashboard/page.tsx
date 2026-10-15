@@ -1,3 +1,4 @@
+import { getMtdCountdown } from "@/lib/gtm/briefs";
 import { AlertTriangle, CheckCircle2, Clock3, Route } from "lucide-react";
 import Link from "next/link";
 
@@ -21,6 +22,7 @@ const statusTone = {
 };
 
 export default async function DashboardPage() {
+  const mtd = getMtdCountdown();
   const user = await requireUser();
   const readableModules = getReadableModules(user.roles);
   const canSeeRevenue = hasPermission(user.roles, "gtm.briefs.read");
@@ -58,8 +60,10 @@ export default async function DashboardPage() {
           <h1 className="portal-title">Operating dashboard</h1>
         </div>
         <div className="portal-deadline">
-          <span>MTD wedge date</span>
-          <strong>7 Aug 2026</strong>
+          <span>Next MTD deadline</span>
+          <strong>
+            {new Date(`${mtd.targetDate}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })} · {mtd.daysRemaining} days
+          </strong>
         </div>
       </section>
 

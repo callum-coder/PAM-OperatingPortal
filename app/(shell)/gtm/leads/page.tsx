@@ -29,7 +29,7 @@ export default async function LeadsPage() {
     <div className="space-y-6">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">gtm.leads.read</p>
+          <p className="portal-kicker">GTM · Lead generation</p>
           <h1 className="portal-title">Lead engine</h1>
         </div>
         {canGenerate ? (

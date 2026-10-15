@@ -55,7 +55,7 @@ export default async function JourneyPage() {
           <h1 className="portal-title">Trial journey</h1>
         </div>
         <div className="portal-deadline">
-          <span>MTD wedge</span>
+          <span>Next MTD deadline</span>
           <strong>{mtd.daysRemaining} days</strong>
         </div>
       </section>

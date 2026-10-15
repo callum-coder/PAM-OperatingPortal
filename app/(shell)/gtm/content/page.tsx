@@ -15,7 +15,7 @@ export default async function ContentPage() {
     <div className="space-y-6">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">gtm.content.read</p>
+          <p className="portal-kicker">GTM · Content</p>
           <h1 className="portal-title">Content pipeline</h1>
         </div>
       </section>

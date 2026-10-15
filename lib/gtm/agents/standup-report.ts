@@ -27,7 +27,7 @@ export type StandupInput = {
 
 export function buildStandupText(input: StandupInput): string {
   const lines: string[] = [
-    `GTM Lead — standup for ${input.date} (${input.mtdDaysRemaining} days to the MTD wedge)`,
+    `GTM Lead — standup for ${input.date} (${input.mtdDaysRemaining} days to the next MTD deadline)`,
   ];
 
   if (input.fleet.length) {

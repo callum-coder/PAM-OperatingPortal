@@ -4,15 +4,19 @@ import { buildBriefNarrative, getMtdCountdown } from "./briefs";
 import { classifyPamReadonlyConfig } from "./pam-readonly-config";
 
 describe("getMtdCountdown", () => {
-  it("counts calendar days to the MTD wedge date", () => {
+  it("counts calendar days to the first MTD deadline before it passes", () => {
     expect(getMtdCountdown(new Date("2026-06-23T12:00:00Z"))).toEqual({
       targetDate: "2026-08-07",
       daysRemaining: 45,
     });
   });
 
-  it("does not return negative days after the wedge date", () => {
-    expect(getMtdCountdown(new Date("2026-08-08T00:00:00Z")).daysRemaining).toBe(0);
+  it("rolls to the next quarterly deadline once one has passed", () => {
+    expect(getMtdCountdown(new Date("2026-08-08T00:00:00Z"))).toEqual({ targetDate: "2026-11-07", daysRemaining: 91 });
+    expect(getMtdCountdown(new Date("2026-10-15T09:00:00Z"))).toEqual({ targetDate: "2026-11-07", daysRemaining: 23 });
+    expect(getMtdCountdown(new Date("2026-11-07T23:00:00Z")).daysRemaining).toBe(0);
+    expect(getMtdCountdown(new Date("2026-11-08T00:00:00Z")).targetDate).toBe("2027-02-07");
+    expect(getMtdCountdown(new Date("2027-05-08T00:00:00Z")).targetDate).toBe("2027-08-07");
   });
 });
 
