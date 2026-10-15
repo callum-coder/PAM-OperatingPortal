@@ -57,7 +57,7 @@ export default async function JourneyPage() {
           <h1 className="portal-title">Trial journey</h1>
         </div>
         <div className="portal-deadline">
-          <span>MTD wedge</span>
+          <span>Next MTD deadline</span>
           <strong>{mtd.daysRemaining} days</strong>
         </div>
       </section>
@@ -68,12 +68,12 @@ export default async function JourneyPage() {
             <p className="portal-kicker">The 14-day journey</p>
             <h2 className="portal-section-title">Success map</h2>
           </div>
-          <Route className="text-[#71806a]" size={20} />
+          <Route className="text-[#8b94a3]" size={20} />
         </div>
         <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
           {TRIAL_JOURNEY.map((stage, index) => (
-            <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-4" key={stage.phase}>
-              <p className="text-xs font-semibold uppercase text-[#64715d]">
+            <div className="rounded-lg border border-[#e6e8ef] bg-[#ffffff] p-4" key={stage.phase}>
+              <p className="text-xs font-semibold uppercase text-[#5b6472]">
                 {index + 1}. {stage.days}
               </p>
               <p className="mt-1 font-semibold">{stage.phase}</p>
@@ -115,7 +115,7 @@ export default async function JourneyPage() {
           <div className="mt-4">
             <div className="flex items-center justify-between gap-4">
               <p className="portal-kicker">WhatsApp demo · +44 7868 264023</p>
-              <Link className="text-sm font-medium text-[#1b2419] underline-offset-4 hover:underline" href="/gtm/demo">
+              <Link className="text-sm font-medium text-[#1a1a2e] underline-offset-4 hover:underline" href="/gtm/demo">
                 Read every conversation →
               </Link>
             </div>
@@ -160,13 +160,13 @@ export default async function JourneyPage() {
         <div className="portal-panel">
           <h2 className="portal-section-title">Week-over-week</h2>
           {storedDeltas.length ? (
-            <div className="mt-4 divide-y divide-[#dfe5d8]">
+            <div className="mt-4 divide-y divide-[#e6e8ef]">
               {storedDeltas.map((row) => (
                 <div className="flex items-center justify-between gap-3 py-2" key={row.key}>
                   <p className="text-sm">{row.label}</p>
                   <p className="text-sm">
                     <span className="font-semibold">{row.current}</span>{" "}
-                    <span className={row.delta && row.delta > 0 ? "text-[#28734d]" : "text-[#697567]"}>
+                    <span className={row.delta && row.delta > 0 ? "text-[#0a6648]" : "text-[#8b94a3]"}>
                       ({formatDelta(row.delta)})
                     </span>
                   </p>
@@ -183,7 +183,7 @@ export default async function JourneyPage() {
         <div className="portal-panel">
           <div className="mb-4 flex items-center justify-between gap-4">
             <h2 className="portal-section-title">Targets</h2>
-            <TargetIcon className="text-[#71806a]" size={18} />
+            <TargetIcon className="text-[#8b94a3]" size={18} />
           </div>
 
           {evaluatedTargets.length ? (
@@ -208,9 +208,9 @@ export default async function JourneyPage() {
                       ) : null}
                     </div>
                   </div>
-                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#e7ebe1]">
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#e6e8ef]">
                     <div
-                      className="h-full rounded-full bg-[#d9ff73]"
+                      className="h-full rounded-full bg-[#2ec4a0]"
                       style={{ width: `${Math.min(100, target.progressPct ?? 0)}%` }}
                     />
                   </div>
@@ -222,7 +222,7 @@ export default async function JourneyPage() {
           )}
 
           {canEdit ? (
-            <form action={upsertTarget} className="mt-6 grid gap-2 border-t border-[#dfe5d8] pt-4 sm:grid-cols-[1fr_110px_150px_auto]">
+            <form action={upsertTarget} className="mt-6 grid gap-2 border-t border-[#e6e8ef] pt-4 sm:grid-cols-[1fr_110px_150px_auto]">
               <select className="portal-input" defaultValue="payingTotal" name="metric">
                 {TARGETABLE_METRICS.map((metric) => (
                   <option key={metric.key} value={metric.key}>
@@ -253,7 +253,7 @@ function FunnelMetric({
   suffix?: string;
 }) {
   return (
-    <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-4">
+    <div className="rounded-lg border border-[#e6e8ef] bg-[#ffffff] p-4">
       <p className="portal-muted text-sm">{label}</p>
       <p className="mt-2 text-3xl font-semibold">
         {value === null ? "—" : `${value.toLocaleString("en-GB")}${suffix ?? ""}`}

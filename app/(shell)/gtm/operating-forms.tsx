@@ -24,7 +24,7 @@ export function ManualInputForm() {
       </div>
       <div className="grid gap-3 md:grid-cols-2">
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-[#33402f]">Type</span>
+          <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Type</span>
           <select className="portal-input" name="input_type" defaultValue="objection">
             <option value="customer_call_note">Customer call note</option>
             <option value="objection">Objection</option>
@@ -35,7 +35,7 @@ export function ManualInputForm() {
           </select>
         </label>
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-[#33402f]">Severity</span>
+          <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Severity</span>
           <select className="portal-input" name="severity" defaultValue="medium">
             <option value="critical">Critical</option>
             <option value="high">High</option>
@@ -45,14 +45,14 @@ export function ManualInputForm() {
         </label>
       </div>
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">Title</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Title</span>
         <input className="portal-input" name="title" required />
       </label>
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">Detail</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Detail</span>
         <textarea className="portal-input min-h-24" name="detail" />
       </label>
-      {state.error ? <p className="text-sm text-[#9a241b]">{state.error}</p> : null}
+      {state.error ? <p className="text-sm text-[#b42318]">{state.error}</p> : null}
       <button className="portal-primary-button" disabled={pending} type="submit">
         <Lightbulb size={18} />
         {pending ? "Capturing" : "Capture input"}
@@ -71,28 +71,28 @@ export function CampaignForm() {
         <h2 className="portal-section-title">Create campaign</h2>
       </div>
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">Name</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Name</span>
         <input className="portal-input" name="name" required />
       </label>
       <div className="grid gap-3 md:grid-cols-2">
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-[#33402f]">Audience</span>
+          <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Audience</span>
           <input className="portal-input" name="audience" />
         </label>
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-[#33402f]">Channel</span>
+          <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Channel</span>
           <input className="portal-input" name="channel" />
         </label>
       </div>
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">Message</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Message</span>
         <textarea className="portal-input min-h-20" name="message" />
       </label>
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">Landing page</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Landing page</span>
         <input className="portal-input" name="landing_page_url" />
       </label>
-      {state.error ? <p className="text-sm text-[#9a241b]">{state.error}</p> : null}
+      {state.error ? <p className="text-sm text-[#b42318]">{state.error}</p> : null}
       <button className="portal-primary-button" disabled={pending} type="submit">
         <Plus size={18} />
         {pending ? "Creating" : "Create campaign"}
@@ -129,7 +129,7 @@ function ReadinessCheckForm({ check }: { check: GtmOutreachReadinessRow }) {
   const [state, action, pending] = useActionState(updateOutreachReadiness, initialState);
 
   return (
-    <form action={action} className="border-t border-[#dfe5d8] pt-4 first:border-t-0 first:pt-0">
+    <form action={action} className="border-t border-[#e6e8ef] pt-4 first:border-t-0 first:pt-0">
       <input name="key" type="hidden" value={check.key} />
       <div className="grid gap-3 md:grid-cols-[1fr_190px]">
         <div>
@@ -140,7 +140,7 @@ function ReadinessCheckForm({ check }: { check: GtmOutreachReadinessRow }) {
           </p>
         </div>
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-[#33402f]">Status</span>
+          <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Status</span>
           <select className="portal-input" name="status" defaultValue={check.status}>
             <option value="pending">Pending</option>
             <option value="approved">Approved</option>
@@ -150,10 +150,10 @@ function ReadinessCheckForm({ check }: { check: GtmOutreachReadinessRow }) {
         </label>
       </div>
       <label className="mt-3 block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">Notes</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Notes</span>
         <textarea className="portal-input min-h-16" name="notes" defaultValue={check.notes ?? ""} />
       </label>
-      {state.error ? <p className="mt-2 text-sm text-[#9a241b]">{state.error}</p> : null}
+      {state.error ? <p className="mt-2 text-sm text-[#b42318]">{state.error}</p> : null}
       <button className="portal-secondary-button mt-3" disabled={pending} type="submit">
         {pending ? "Saving" : "Save readiness"}
       </button>

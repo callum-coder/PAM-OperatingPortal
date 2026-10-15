@@ -10,7 +10,7 @@ export default async function ExperimentsPage() {
     <div className="space-y-6">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">gtm.experiments.read</p>
+          <p className="portal-kicker">GTM · Experiments</p>
           <h1 className="portal-title">Experiment loop</h1>
         </div>
       </section>
@@ -19,7 +19,7 @@ export default async function ExperimentsPage() {
         <ExperimentForm />
         <div className="portal-panel">
           <h2 className="portal-section-title">Experiment ledger</h2>
-          <div className="mt-4 divide-y divide-[#dfe5d8]">
+          <div className="mt-4 divide-y divide-[#e6e8ef]">
             {experiments.length ? experiments.map((experiment) => (
               <div className="grid gap-2 py-4 md:grid-cols-[1fr_120px]" key={experiment.id}>
                 <div>

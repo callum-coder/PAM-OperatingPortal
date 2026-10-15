@@ -12,12 +12,12 @@ import {
 import type { AgentRunRow } from "@/lib/gtm/agents/agent-data";
 
 const RUN_STATUS_STYLES: Record<string, string> = {
-  ok: "bg-[#e6f4d8] text-[#3f5a23]",
-  error: "bg-[#f7dada] text-[#7a2a2a]",
-  skipped: "bg-[#f2ecd5] text-[#6b5d22]",
-  warning: "bg-[#f2ecd5] text-[#6b5d22]",
-  sent: "bg-[#e6f4d8] text-[#3f5a23]",
-  failed: "bg-[#f7dada] text-[#7a2a2a]",
+  ok: "bg-[#d0f5ee] text-[#0a6648]",
+  error: "bg-[#fee2e2] text-[#b42318]",
+  skipped: "bg-[#fef3c7] text-[#92400e]",
+  warning: "bg-[#fef3c7] text-[#92400e]",
+  sent: "bg-[#d0f5ee] text-[#0a6648]",
+  failed: "bg-[#fee2e2] text-[#b42318]",
 };
 
 function formatWhen(iso: string | null): string {
@@ -56,7 +56,7 @@ export default async function AgentDetailPage({
 
       <section className="portal-page-header">
         <div className="flex items-center gap-3">
-          <span className="flex size-10 items-center justify-center rounded-md bg-[#162016] text-[#d9ff73]">
+          <span className="flex size-10 items-center justify-center rounded-md bg-[#1a1a2e] text-[#2ec4a0]">
             <Bot size={20} />
           </span>
           <div>
@@ -71,7 +71,7 @@ export default async function AgentDetailPage({
       <section className="grid gap-4 xl:grid-cols-2">
         <div className="portal-panel">
           <div className="mb-4 flex items-center gap-2">
-            <MessageSquare className="text-[#71806a]" size={18} />
+            <MessageSquare className="text-[#8b94a3]" size={18} />
             <h2 className="portal-section-title">Messages</h2>
           </div>
           {messages.length ? (
@@ -104,11 +104,11 @@ export default async function AgentDetailPage({
 
 function MessageItem({ message }: { message: AgentMessageRow }) {
   return (
-    <div className="border-t border-[#dfe5d8] pt-4 first:border-t-0 first:pt-0">
+    <div className="border-t border-[#e6e8ef] pt-4 first:border-t-0 first:pt-0">
       <div className="flex items-center gap-2">
         <span
           className={`rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${
-            RUN_STATUS_STYLES[message.status] ?? "bg-[#eceee8] text-[#5f6d58]"
+            RUN_STATUS_STYLES[message.status] ?? "bg-[#eef0f4] text-[#5b6472]"
           }`}
         >
           {message.status}
@@ -123,12 +123,12 @@ function MessageItem({ message }: { message: AgentMessageRow }) {
 
 function RunItem({ run }: { run: AgentRunRow }) {
   return (
-    <div className="flex items-start justify-between gap-3 border-t border-[#dfe5d8] pt-3 first:border-t-0 first:pt-0">
+    <div className="flex items-start justify-between gap-3 border-t border-[#e6e8ef] pt-3 first:border-t-0 first:pt-0">
       <div>
         <div className="flex items-center gap-2">
           <span
             className={`rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${
-              RUN_STATUS_STYLES[run.status] ?? "bg-[#eceee8] text-[#5f6d58]"
+              RUN_STATUS_STYLES[run.status] ?? "bg-[#eef0f4] text-[#5b6472]"
             }`}
           >
             {run.status}

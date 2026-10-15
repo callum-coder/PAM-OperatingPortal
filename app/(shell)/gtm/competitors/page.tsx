@@ -7,9 +7,9 @@ import { CompetitorWatchForm } from "../subsystem-forms";
 import { scanCompetitors } from "../actions";
 
 const SIGNIFICANCE_STYLES: Record<string, string> = {
-  high: "bg-[#f7dada] text-[#7a2a2a]",
-  medium: "bg-[#f2ecd5] text-[#6b5d22]",
-  low: "bg-[#eceee8] text-[#5f6d58]",
+  high: "bg-[#fee2e2] text-[#b42318]",
+  medium: "bg-[#fef3c7] text-[#92400e]",
+  low: "bg-[#eef0f4] text-[#5b6472]",
 };
 
 function formatWhen(iso: string | null): string {
@@ -30,7 +30,7 @@ export default async function CompetitorsPage() {
     <div className="space-y-6">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">gtm.competitors.read</p>
+          <p className="portal-kicker">GTM · Competitors</p>
           <h1 className="portal-title">Competitor monitor</h1>
         </div>
         {canScan ? (
@@ -47,7 +47,7 @@ export default async function CompetitorsPage() {
         <CompetitorWatchForm />
         <div className="portal-panel">
           <h2 className="portal-section-title">Watchlist</h2>
-          <div className="mt-4 divide-y divide-[#dfe5d8]">
+          <div className="mt-4 divide-y divide-[#e6e8ef]">
             {watches.length ? watches.map((watch) => (
               <div className="grid gap-2 py-4 md:grid-cols-[1fr_150px]" key={watch.id}>
                 <div>
@@ -72,11 +72,11 @@ export default async function CompetitorsPage() {
         <h2 className="portal-section-title">Detected changes</h2>
         <div className="mt-4 space-y-4">
           {changes.length ? changes.map((change) => (
-            <div className="border-t border-[#dfe5d8] pt-4 first:border-t-0 first:pt-0" key={change.id}>
+            <div className="border-t border-[#e6e8ef] pt-4 first:border-t-0 first:pt-0" key={change.id}>
               <div className="flex items-center gap-2">
                 <span
                   className={`rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${
-                    SIGNIFICANCE_STYLES[change.significance ?? "low"] ?? "bg-[#eceee8] text-[#5f6d58]"
+                    SIGNIFICANCE_STYLES[change.significance ?? "low"] ?? "bg-[#eef0f4] text-[#5b6472]"
                   }`}
                 >
                   {change.significance ?? "low"}

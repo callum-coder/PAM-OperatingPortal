@@ -64,7 +64,7 @@ export default async function GtmPage() {
                 {status?.headline ?? "Awaiting first cron run"}
               </p>
               <ArrowRight
-                className="mt-5 text-[#71806a] transition group-hover:translate-x-1"
+                className="mt-5 text-[#8b94a3] transition group-hover:translate-x-1"
                 size={18}
               />
             </Link>
@@ -79,10 +79,10 @@ export default async function GtmPage() {
               <p className="portal-kicker">Daily worklist</p>
               <h2 className="portal-section-title">Signal inbox</h2>
             </div>
-            <ClipboardList className="text-[#71806a]" size={20} />
+            <ClipboardList className="text-[#8b94a3]" size={20} />
           </div>
           {snapshot.signals.length ? (
-            <div className="divide-y divide-[#dfe5d8]">
+            <div className="divide-y divide-[#e6e8ef]">
               {snapshot.signals.slice(0, 8).map((signal) => (
                 <div className="grid gap-2 py-4 md:grid-cols-[130px_1fr_120px]" key={signal.id}>
                   <p className="portal-muted uppercase">{signal.severity}</p>
@@ -116,13 +116,13 @@ export default async function GtmPage() {
               <p className="portal-kicker">Decision support</p>
               <h2 className="portal-section-title">Next best actions</h2>
             </div>
-            <Target className="text-[#71806a]" size={20} />
+            <Target className="text-[#8b94a3]" size={20} />
           </div>
           {snapshot.nextBestActions.length ? (
             <div className="space-y-3">
               {snapshot.nextBestActions.slice(0, 6).map((action, index) => (
-                <div className="border-l-2 border-[#d9ff73] pl-3" key={`${action.subsystem}-${index}`}>
-                  <p className="text-sm font-semibold uppercase text-[#64715d]">
+                <div className="border-l-2 border-[#2ec4a0] pl-3" key={`${action.subsystem}-${index}`}>
+                  <p className="text-sm font-semibold uppercase text-[#5b6472]">
                     {action.priority} / {action.subsystem}
                   </p>
                   <p className="text-sm leading-6">{action.action}</p>
@@ -182,7 +182,7 @@ export default async function GtmPage() {
 
 function PipelineMetric({ label, value }: { label: string; value: number | null }) {
   return (
-    <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-4">
+    <div className="rounded-lg border border-[#e6e8ef] bg-[#ffffff] p-4">
       <p className="portal-muted">{label}</p>
       <p className="mt-2 text-3xl font-semibold">{value === null ? "—" : value.toLocaleString("en-GB")}</p>
     </div>
@@ -242,8 +242,8 @@ function LedgerItem({
   detail?: string | null;
 }) {
   return (
-    <div className="border-t border-[#dfe5d8] pt-3 first:border-t-0 first:pt-0">
-      <p className="text-xs font-semibold uppercase text-[#64715d]">{label}</p>
+    <div className="border-t border-[#e6e8ef] pt-3 first:border-t-0 first:pt-0">
+      <p className="text-xs font-semibold uppercase text-[#5b6472]">{label}</p>
       <p className="mt-1 font-medium">{title}</p>
       {detail ? <p className="portal-muted mt-1">{detail}</p> : null}
     </div>

@@ -29,7 +29,7 @@ export function Phone({ thread, items, verdict }: { thread: DemoThread; items: T
     <div className="mx-auto w-full max-w-[400px]">
       <div className="overflow-hidden rounded-[2.2rem] border-[10px] border-[#111] bg-[#111] shadow-xl">
         <div className="flex items-center gap-3 bg-[#075e54] px-4 pb-3 pt-4 text-white">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-[#d9ff73] text-sm font-bold text-[#162016]">P</span>
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-[#2ec4a0] text-sm font-bold text-[#1a1a2e]">P</span>
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold">PAM demo</p>
             <p className="truncate text-[11px] text-white/80">+44 7868 264023 · {thread.visitorFirstName ? `${thread.visitorFirstName}, ` : ""}{thread.actingAs === "tenant" ? "playing the tenant" : "playing the landlord"}</p>
@@ -44,7 +44,7 @@ export function Phone({ thread, items, verdict }: { thread: DemoThread; items: T
           {rows.map(({ item, dayLabel }, i) => {
             if (item.type === "gap") {
               return (
-                <p key={`gap-${i}`} className="mx-auto my-3 w-fit rounded-full bg-[#ffe9b3] px-3 py-0.5 text-[11px] font-medium text-[#7a4b00] shadow-sm">
+                <p key={`gap-${i}`} className="mx-auto my-3 w-fit rounded-full bg-[#ffe9b3] px-3 py-0.5 text-[11px] font-medium text-[#92400e] shadow-sm">
                   ⏱ {item.label}
                 </p>
               );
@@ -58,7 +58,7 @@ export function Phone({ thread, items, verdict }: { thread: DemoThread; items: T
             );
           })}
           {verdict.needsAttention ? (
-            <p className="mx-auto mt-4 w-fit max-w-[90%] rounded-md bg-[#fde8e8] px-3 py-1.5 text-center text-[11px] font-medium text-[#8a1f1f] shadow-sm">
+            <p className="mx-auto mt-4 w-fit max-w-[90%] rounded-md bg-[#fde8e8] px-3 py-1.5 text-center text-[11px] font-medium text-[#b42318] shadow-sm">
               ⚠ {verdict.label}: {verdict.detail}
             </p>
           ) : null}
@@ -87,7 +87,7 @@ export function Bubble({ m }: { m: DemoMessage }) {
           {m.isMirror && m.mirrorLabel ? (
             <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[#6c63d4]">{m.mirrorLabel} · what the other side gets</p>
           ) : null}
-          {m.templateName ? <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[#71806a]">template · {m.templateName}</p> : null}
+          {m.templateName ? <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[#8b94a3]">template · {m.templateName}</p> : null}
           {m.kind === "document" ? (
             <div className="flex items-center gap-2 rounded-md bg-[#f3f3f3] px-2 py-1.5">
               <FileText size={16} className="text-[#6c63d4]" />

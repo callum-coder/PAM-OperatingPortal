@@ -9,16 +9,16 @@ import type { AgentDefinition, AgentStatus } from "@/lib/gtm/agents/types";
 import { runContentAgentNow } from "./actions";
 
 const AGENT_STATUS_STYLES: Record<AgentStatus, string> = {
-  active: "bg-[#e6f4d8] text-[#3f5a23]",
-  planned: "bg-[#eceee8] text-[#5f6d58]",
-  paused: "bg-[#f2ecd5] text-[#6b5d22]",
+  active: "bg-[#d0f5ee] text-[#0a6648]",
+  planned: "bg-[#eef0f4] text-[#5b6472]",
+  paused: "bg-[#fef3c7] text-[#92400e]",
 };
 
 const RUN_STATUS_STYLES: Record<string, string> = {
-  ok: "bg-[#e6f4d8] text-[#3f5a23]",
-  error: "bg-[#f7dada] text-[#7a2a2a]",
-  skipped: "bg-[#f2ecd5] text-[#6b5d22]",
-  warning: "bg-[#f2ecd5] text-[#6b5d22]",
+  ok: "bg-[#d0f5ee] text-[#0a6648]",
+  error: "bg-[#fee2e2] text-[#b42318]",
+  skipped: "bg-[#fef3c7] text-[#92400e]",
+  warning: "bg-[#fef3c7] text-[#92400e]",
 };
 
 function formatWhen(iso: string | null | undefined): string {
@@ -60,7 +60,7 @@ export default async function AiTeamPage() {
             <p className="portal-kicker">Reporting structure</p>
             <h2 className="portal-section-title">Org chart</h2>
           </div>
-          <Network className="text-[#71806a]" size={20} />
+          <Network className="text-[#8b94a3]" size={20} />
         </div>
 
         {head ? (
@@ -109,10 +109,10 @@ function AgentCard({
   const showRunButton = canRun && agent.status === "active" && agent.id === "content-strategist";
 
   return (
-    <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-5">
+    <div className="rounded-lg border border-[#e6e8ef] bg-[#ffffff] p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex size-9 items-center justify-center rounded-md bg-[#162016] text-[#d9ff73]">
+          <span className="flex size-9 items-center justify-center rounded-md bg-[#1a1a2e] text-[#2ec4a0]">
             <Bot size={18} />
           </span>
           <div>
@@ -141,17 +141,17 @@ function AgentCard({
         <Meta label="Writes" value={agent.outputs.join(", ")} />
       </dl>
 
-      <div className="mt-4 border-t border-[#dfe5d8] pt-4">
+      <div className="mt-4 border-t border-[#e6e8ef] pt-4">
         <div className="mb-2 flex items-center gap-2">
-          <Clock className="text-[#71806a]" size={14} />
-          <p className="text-xs font-semibold uppercase text-[#64715d]">Last run</p>
+          <Clock className="text-[#8b94a3]" size={14} />
+          <p className="text-xs font-semibold uppercase text-[#5b6472]">Last run</p>
         </div>
         {latestRun ? (
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span
                 className={`rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${
-                  RUN_STATUS_STYLES[latestRun.status] ?? "bg-[#eceee8] text-[#5f6d58]"
+                  RUN_STATUS_STYLES[latestRun.status] ?? "bg-[#eef0f4] text-[#5b6472]"
                 }`}
               >
                 {latestRun.status}
@@ -174,7 +174,7 @@ function AgentCard({
             {runs.slice(1, 4).map((run) => (
               <div className="flex items-center justify-between gap-3 text-xs" key={run.id}>
                 <span className="portal-muted">{formatWhen(run.finished_at ?? run.created_at)}</span>
-                <span className="text-[#64715d]">
+                <span className="text-[#5b6472]">
                   {run.status}
                   {run.items_created ? ` · ${run.items_created} new` : ""}
                 </span>
@@ -199,7 +199,7 @@ function AgentCard({
 function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase text-[#64715d]">{label}</dt>
+      <dt className="text-xs font-semibold uppercase text-[#5b6472]">{label}</dt>
       <dd className="mt-0.5 break-words">{value}</dd>
     </div>
   );

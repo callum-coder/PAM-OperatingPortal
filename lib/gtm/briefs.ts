@@ -19,22 +19,33 @@ export type WeeklyBriefInput = {
   metrics: BriefMetrics;
 };
 
-const MTD_WEDGE_DATE = "2026-08-07";
+/**
+ * MTD ITSA quarterly update deadlines (standard quarters): 7 Aug, 7 Nov,
+ * 7 Feb and 7 May. The first was 7 Aug 2026. The countdown always points
+ * at the next one, so the tiles, the stand-up, the briefs and the agents'
+ * prompts never count down to a date that has passed.
+ */
+const MTD_DEADLINE_MONTH_DAYS: Array<[number, number]> = [[1, 7], [4, 7], [7, 7], [10, 7]]; // [monthIndex, day]
+const FIRST_MTD_DEADLINE_UTC = Date.UTC(2026, 7, 7);
+
+export function nextMtdDeadline(now = new Date()): Date {
+  const todayUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  if (todayUtc <= FIRST_MTD_DEADLINE_UTC) return new Date(FIRST_MTD_DEADLINE_UTC);
+  for (let year = now.getUTCFullYear(); year <= now.getUTCFullYear() + 1; year += 1) {
+    for (const [month, day] of MTD_DEADLINE_MONTH_DAYS) {
+      const t = Date.UTC(year, month, day);
+      if (t >= todayUtc) return new Date(t);
+    }
+  }
+  return new Date(Date.UTC(now.getUTCFullYear() + 1, 1, 7));
+}
 
 export function getMtdCountdown(now = new Date()): MtdCountdown {
-  const todayUtc = Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate(),
-  );
-  const targetUtc = Date.UTC(2026, 7, 7);
-  const daysRemaining = Math.max(
-    0,
-    Math.ceil((targetUtc - todayUtc) / (1000 * 60 * 60 * 24)),
-  );
-
+  const todayUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const target = nextMtdDeadline(now);
+  const daysRemaining = Math.max(0, Math.ceil((target.getTime() - todayUtc) / (1000 * 60 * 60 * 24)));
   return {
-    targetDate: MTD_WEDGE_DATE,
+    targetDate: target.toISOString().slice(0, 10),
     daysRemaining,
   };
 }
@@ -59,7 +70,7 @@ export function buildBriefNarrative(input: WeeklyBriefInput): string {
     `${input.product.toUpperCase()} weekly brief for ${input.periodStart} to ${input.periodEnd}.`,
     `${input.mtdCountdown.daysRemaining} days remain until the ${formatDate(
       input.mtdCountdown.targetDate,
-    )} MTD wedge date.`,
+    )} MTD quarterly deadline.`,
     `The aggregate PAM view reports ${authUsers}, ${propertyRecords}, and ${payingSignals}.`,
     "This is a deterministic system-generated brief until Anthropic synthesis is configured.",
   ].join(" ");

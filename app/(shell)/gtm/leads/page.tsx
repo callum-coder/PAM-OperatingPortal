@@ -29,7 +29,7 @@ export default async function LeadsPage() {
     <div className="space-y-6">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">gtm.leads.read</p>
+          <p className="portal-kicker">GTM · Lead generation</p>
           <h1 className="portal-title">Lead engine</h1>
         </div>
         {canGenerate ? (
@@ -51,7 +51,7 @@ export default async function LeadsPage() {
       {plays.length === 0 ? (
         <div className="portal-panel">
           <div className="flex items-center gap-3">
-            <Magnet className="text-[#71806a]" size={20} />
+            <Magnet className="text-[#8b94a3]" size={20} />
             <p className="portal-muted">
               No lead plays yet. {canGenerate ? "Generate plays to design the engine." : "The Lead Finder runs weekly."}
             </p>
@@ -87,7 +87,7 @@ export default async function LeadsPage() {
 
 function PlayCard({ play, canDraftOutreach }: { play: LeadPlayRow; canDraftOutreach: boolean }) {
   return (
-    <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-4">
+    <div className="rounded-lg border border-[#e6e8ef] bg-[#ffffff] p-4">
       <div className="flex items-start justify-between gap-3">
         <p className="font-medium">{play.title}</p>
         <span className="shrink-0 font-semibold">
@@ -121,7 +121,7 @@ function Field({ label, value }: { label: string; value: string | null }) {
   if (!value) return null;
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase text-[#64715d]">{label}</dt>
+      <dt className="text-xs font-semibold uppercase text-[#5b6472]">{label}</dt>
       <dd className="mt-0.5">{value}</dd>
     </div>
   );

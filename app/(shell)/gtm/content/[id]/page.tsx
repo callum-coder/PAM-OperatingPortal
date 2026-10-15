@@ -9,12 +9,12 @@ import { hasPermission } from "@/lib/rbac/permissions";
 import { draftContentItem, saveContentDraft, setContentStage } from "../../actions";
 
 const STAGE_STYLES: Record<string, string> = {
-  idea: "bg-[#eceee8] text-[#5f6d58]",
-  drafting: "bg-[#f2ecd5] text-[#6b5d22]",
-  review: "bg-[#f2ecd5] text-[#6b5d22]",
+  idea: "bg-[#eef0f4] text-[#5b6472]",
+  drafting: "bg-[#fef3c7] text-[#92400e]",
+  review: "bg-[#fef3c7] text-[#92400e]",
   scheduled: "bg-[#dbe7f4] text-[#2a4a6b]",
-  published: "bg-[#e6f4d8] text-[#3f5a23]",
-  parked: "bg-[#eceee8] text-[#5f6d58]",
+  published: "bg-[#d0f5ee] text-[#0a6648]",
+  parked: "bg-[#eef0f4] text-[#5b6472]",
 };
 
 export default async function ContentItemPage({
@@ -48,7 +48,7 @@ export default async function ContentItemPage({
         <div className="flex items-center gap-3">
           <span
             className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${
-              STAGE_STYLES[stage] ?? "bg-[#eceee8] text-[#5f6d58]"
+              STAGE_STYLES[stage] ?? "bg-[#eef0f4] text-[#5b6472]"
             }`}
           >
             {stage}
@@ -76,7 +76,7 @@ export default async function ContentItemPage({
           {canWrite && item.draft ? (
             <form action={saveContentDraft} className="mt-6 space-y-2">
               <input name="item_id" type="hidden" value={item.id} />
-              <label className="text-xs font-semibold uppercase text-[#64715d]" htmlFor="draft">
+              <label className="text-xs font-semibold uppercase text-[#5b6472]" htmlFor="draft">
                 Edit draft (markdown)
               </label>
               <textarea
@@ -208,7 +208,7 @@ function StageButton({ itemId, stage, label }: { itemId: string; stage: string; 
 function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase text-[#64715d]">{label}</dt>
+      <dt className="text-xs font-semibold uppercase text-[#5b6472]">{label}</dt>
       <dd className="mt-0.5 break-words">{value}</dd>
     </div>
   );
@@ -226,7 +226,7 @@ function DraftView({ markdown }: { markdown: string }) {
       return;
     }
     if (text === "---" || text === "***") {
-      nodes.push(<hr className="my-5 border-[#dfe5d8]" key={index} />);
+      nodes.push(<hr className="my-5 border-[#e6e8ef]" key={index} />);
       return;
     }
     if (text.startsWith("### ")) {

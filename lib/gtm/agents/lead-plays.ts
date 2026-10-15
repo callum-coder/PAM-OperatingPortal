@@ -50,7 +50,7 @@ export function buildLeadFinderInput(snapshot: LeadSnapshot): string {
 
   return [
     `Today is ${snapshot.today}. Propose 4 to 8 lead-gen plays for ${snapshot.product.toUpperCase()}.`,
-    `${snapshot.mtd.daysRemaining} days remain until the ${snapshot.mtd.targetDate} MTD wedge date — use it as the hook.`,
+    `${snapshot.mtd.daysRemaining} days remain until the ${snapshot.mtd.targetDate} MTD quarterly deadline — use it as the hook.`,
     "",
     "Cover the Core Four; bias toward warm, high-ease plays. Existing plays by channel:",
     channelLines,

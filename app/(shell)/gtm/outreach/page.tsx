@@ -13,8 +13,8 @@ const CHANNEL_LABELS: Record<string, string> = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  draft: "bg-[#f2ecd5] text-[#6b5d22]",
-  approved: "bg-[#e6f4d8] text-[#3f5a23]",
+  draft: "bg-[#fef3c7] text-[#92400e]",
+  approved: "bg-[#d0f5ee] text-[#0a6648]",
 };
 
 function formatWhen(iso: string): string {
@@ -34,14 +34,14 @@ export default async function OutreachPage() {
     <div className="space-y-6">
       <section className="portal-page-header">
         <div>
-          <p className="portal-kicker">gtm.outreach.read</p>
+          <p className="portal-kicker">GTM · Outreach</p>
           <h1 className="portal-title">Outreach loops</h1>
         </div>
       </section>
 
       <section className="portal-panel">
         <div className="flex items-start gap-3">
-          <ShieldAlert className="mt-0.5 shrink-0 text-[#9f6a00]" size={18} />
+          <ShieldAlert className="mt-0.5 shrink-0 text-[#92400e]" size={18} />
           <p className="portal-muted max-w-3xl">
             Draft-only mode. The Outreach Operator writes copy for lead plays (from the Lead engine
             page); a human reviews, personalises the marked slots, and sends manually. Automated
@@ -71,16 +71,16 @@ export default async function OutreachPage() {
 
 function DraftCard({ draft, canManage }: { draft: OutreachDraftRow; canManage: boolean }) {
   return (
-    <div className="rounded-lg border border-[#dfe5d8] bg-[#fbfcf7] p-5">
+    <div className="rounded-lg border border-[#e6e8ef] bg-[#ffffff] p-5">
       <div className="flex flex-wrap items-center gap-2">
         <span
           className={`rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${
-            STATUS_STYLES[draft.status] ?? "bg-[#eceee8] text-[#5f6d58]"
+            STATUS_STYLES[draft.status] ?? "bg-[#eef0f4] text-[#5b6472]"
           }`}
         >
           {draft.status}
         </span>
-        <span className="text-xs font-semibold uppercase text-[#64715d]">
+        <span className="text-xs font-semibold uppercase text-[#5b6472]">
           {CHANNEL_LABELS[draft.channel] ?? draft.channel}
           {draft.variant ? ` · Variant ${draft.variant}` : ""}
         </span>

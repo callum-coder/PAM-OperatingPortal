@@ -68,7 +68,7 @@ export function buildBriefSynthesisInput(context: BriefSynthesisContext): string
   const lines = [
     `Write this week's GTM brief for ${context.product.toUpperCase()}.`,
     `Period: ${context.periodStart} to ${context.periodEnd}.`,
-    `${context.mtd.daysRemaining} days remain until the ${context.mtd.targetDate} MTD wedge date.`,
+    `${context.mtd.daysRemaining} days remain until the ${context.mtd.targetDate} MTD quarterly deadline.`,
     "",
     "Aggregate PAM metrics (read-only, coarse counts — not deltas):",
     metricLine(m.authUsers, "auth users"),

@@ -13,7 +13,7 @@ export function LoginForm() {
   return (
     <form action={action} className="space-y-4">
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">Email</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Email</span>
         <input
           className="portal-input"
           name="email"
@@ -24,7 +24,7 @@ export function LoginForm() {
       </label>
 
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-[#33402f]">Password</span>
+        <span className="mb-2 block text-sm font-medium text-[#1a1a2e]">Password</span>
         <input
           className="portal-input"
           name="password"
@@ -35,7 +35,7 @@ export function LoginForm() {
       </label>
 
       {state.error ? (
-        <p className="border border-[#efb8b2] bg-[#fff4f2] px-3 py-2 text-sm text-[#9a241b]">
+        <p className="border border-[#efb8b2] bg-[#fff4f2] px-3 py-2 text-sm text-[#b42318]">
           {state.error}
         </p>
       ) : null}

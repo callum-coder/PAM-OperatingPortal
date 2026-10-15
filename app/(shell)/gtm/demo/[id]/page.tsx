@@ -70,23 +70,23 @@ function Facts({ thread, verdict, now, messageCount }: { thread: DemoThread; ver
       <section className="portal-panel">
         <p className="portal-kicker">Where it stands</p>
         <h2 className="portal-section-title">{verdict.label}</h2>
-        <p className="mt-2 text-sm text-[#2f3a2c]">{verdict.detail}</p>
-        <p className="mt-3 text-sm text-[#64715d]">{nextMove(verdict)}</p>
+        <p className="mt-2 text-sm text-[#1a1a2e]">{verdict.detail}</p>
+        <p className="mt-3 text-sm text-[#5b6472]">{nextMove(verdict)}</p>
       </section>
       <section className="portal-panel">
         <h2 className="portal-section-title">Facts</h2>
         <dl className="mt-3 grid gap-2 text-sm">
           {rows.map(([k, v]) => (
             <div key={k} className="grid grid-cols-[8rem_1fr] gap-3">
-              <dt className="text-[#71806a]">{k}</dt>
-              <dd className="text-[#162016]">{v}</dd>
+              <dt className="text-[#8b94a3]">{k}</dt>
+              <dd className="text-[#1a1a2e]">{v}</dd>
             </div>
           ))}
         </dl>
       </section>
       <section className="portal-panel">
         <h2 className="portal-section-title">Reading the phone</h2>
-        <ul className="mt-3 space-y-1.5 text-sm text-[#2f3a2c]">
+        <ul className="mt-3 space-y-1.5 text-sm text-[#1a1a2e]">
           <li>Green bubbles on the right are the visitor. White on the left is PAM.</li>
           <li>A purple-edged bubble is a mirror: what PAM would have sent to the other side, shown so the visitor sees both halves.</li>
           <li>Blue rows under a bubble are the reply buttons PAM offered.</li>
